@@ -2,8 +2,52 @@
 
 import { motion } from 'framer-motion'
 import { Send, User, Mail, Phone, MessageSquare } from 'lucide-react'
+import { useState, FormEvent } from 'react'
 
 export default function Daftar() {
+  const [formData, setFormData] = useState({
+    nama: '',
+    usia: '',
+    email: '',
+    telepon: '',
+    program: '',
+    pesan: ''
+  })
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault()
+    
+    // Format pesan WhatsApp
+    const message = `*PENDAFTARAN SANTRI BARU*
+*TPQ Darussalam*
+
+*Nama Lengkap:* ${formData.nama}
+*Usia:* ${formData.usia} tahun
+*Email Orang Tua:* ${formData.email}
+*No. Telepon:* ${formData.telepon}
+*Program:* ${formData.program}
+${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}
+
+_Terima kasih telah mendaftar di TPQ Darussalam!_`
+
+    // Nomor WhatsApp TPQ (ganti dengan nomor WhatsApp TPQ Anda)
+    const phoneNumber = '6281234567890' // Format: 62 + nomor tanpa 0 di depan
+    
+    // Encode pesan untuk URL
+    const encodedMessage = encodeURIComponent(message)
+    
+    // Buka WhatsApp
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+    window.open(whatsappURL, '_blank')
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
   return (
     <section id="daftar" className="relative py-20 overflow-hidden">
       {/* Background dengan gradient dan pattern */}
@@ -40,7 +84,7 @@ export default function Daftar() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100"
         >
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
@@ -51,6 +95,10 @@ export default function Daftar() {
                   <input
                     type="text"
                     id="nama"
+                    name="nama"
+                    value={formData.nama}
+                    onChange={handleChange}
+                    required
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                     placeholder="Nama santri"
                   />
@@ -64,6 +112,10 @@ export default function Daftar() {
                 <input
                   type="number"
                   id="usia"
+                  name="usia"
+                  value={formData.usia}
+                  onChange={handleChange}
+                  required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   placeholder="Usia santri"
                 />
@@ -79,6 +131,10 @@ export default function Daftar() {
                 <input
                   type="email"
                   id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   placeholder="email@example.com"
                 />
@@ -94,6 +150,10 @@ export default function Daftar() {
                 <input
                   type="tel"
                   id="telepon"
+                  name="telepon"
+                  value={formData.telepon}
+                  onChange={handleChange}
+                  required
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   placeholder="+62 812-3456-7890"
                 />
@@ -106,12 +166,16 @@ export default function Daftar() {
               </label>
               <select
                 id="program"
+                name="program"
+                value={formData.program}
+                onChange={handleChange}
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
               >
                 <option value="">Pilih Program</option>
-                <option value="pra-tk">Kelas Pra-TK (4-5 Tahun)</option>
-                <option value="dasar">Kelas Dasar (6-12 Tahun)</option>
-                <option value="dewasa">Kelas Dewasa/Tahsin</option>
+                <option value="Kelas Pra-TK (4-5 Tahun)">Kelas Pra-TK (4-5 Tahun)</option>
+                <option value="Kelas Dasar (6-12 Tahun)">Kelas Dasar (6-12 Tahun)</option>
+                <option value="Kelas Dewasa/Tahsin">Kelas Dewasa/Tahsin</option>
               </select>
             </div>
 
@@ -123,6 +187,9 @@ export default function Daftar() {
                 <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                 <textarea
                   id="pesan"
+                  name="pesan"
+                  value={formData.pesan}
+                  onChange={handleChange}
                   rows={4}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
                   placeholder="Pesan atau pertanyaan..."
@@ -134,7 +201,7 @@ export default function Daftar() {
               type="submit"
               className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-4 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform"
             >
-              <span>Kirim Pendaftaran</span>
+              <span>Kirim via WhatsApp</span>
               <Send className="w-5 h-5" />
             </button>
           </form>
