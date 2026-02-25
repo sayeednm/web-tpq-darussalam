@@ -31,7 +31,7 @@ ${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}
 _Terima kasih telah mendaftar di TPQ Darussalam!_`
 
     // Nomor WhatsApp TPQ (ganti dengan nomor WhatsApp TPQ Anda)
-    const phoneNumber = '6281234567890' // Format: 62 + nomor tanpa 0 di depan
+    const phoneNumber = '6289528036024' // Format: 62 + nomor tanpa 0 di depan
     
     // Encode pesan untuk URL
     const encodedMessage = encodeURIComponent(message)
