@@ -37,47 +37,14 @@ export default function DashboardPage() {
   const bulanIni = new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' })
 
   const cards = [
-    {
-      label: 'Santri Aktif',
-      value: stats.santri,
-      icon: Users,
-      gradient: 'from-blue-500 to-blue-600',
-      bg: 'bg-blue-50',
-      text: 'text-blue-600',
-      desc: 'Total santri terdaftar'
-    },
-    {
-      label: 'Guru Aktif',
-      value: stats.guru,
-      icon: GraduationCap,
-      gradient: 'from-emerald-500 to-emerald-600',
-      bg: 'bg-emerald-50',
-      text: 'text-emerald-600',
-      desc: 'Pengajar aktif'
-    },
-    {
-      label: 'Kelas',
-      value: stats.kelas,
-      icon: BookOpen,
-      gradient: 'from-purple-500 to-purple-600',
-      bg: 'bg-purple-50',
-      text: 'text-purple-600',
-      desc: 'Kelas tersedia'
-    },
-    {
-      label: 'SPP Lunas',
-      value: stats.lunas,
-      icon: Wallet,
-      gradient: 'from-amber-500 to-orange-500',
-      bg: 'bg-amber-50',
-      text: 'text-amber-600',
-      desc: bulanIni
-    },
+    { label: 'Santri Aktif', value: stats.santri, icon: Users, bg: 'bg-blue-50', text: 'text-blue-600', desc: 'Total santri terdaftar' },
+    { label: 'Guru Aktif', value: stats.guru, icon: GraduationCap, bg: 'bg-emerald-50', text: 'text-emerald-600', desc: 'Pengajar aktif' },
+    { label: 'Kelas', value: stats.kelas, icon: BookOpen, bg: 'bg-purple-50', text: 'text-purple-600', desc: 'Kelas tersedia' },
+    { label: 'SPP Lunas', value: stats.lunas, icon: Wallet, bg: 'bg-amber-50', text: 'text-amber-600', desc: bulanIni },
   ]
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1 flex items-center gap-1">
@@ -86,16 +53,13 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Stats Cards */}
       {loading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 animate-pulse h-32 shadow-sm" />
-          ))}
+          {[...Array(4)].map((_, i) => <div key={i} className="bg-white rounded-2xl p-5 animate-pulse h-32 shadow-sm" />)}
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          {cards.map(({ label, value, icon: Icon, gradient, bg, text, desc }) => (
+          {cards.map(({ label, value, icon: Icon, bg, text, desc }) => (
             <div key={label} className="bg-white rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
               <div className="flex items-start justify-between mb-3">
                 <div className={`${bg} p-2.5 rounded-xl`}>
@@ -111,14 +75,11 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* SPP Summary */}
       <div className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-5 text-white shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-emerald-100 text-sm">Total SPP Terkumpul Bulan Ini</p>
-            <p className="text-2xl lg:text-3xl font-bold mt-1">
-              Rp {stats.totalSPP.toLocaleString('id-ID')}
-            </p>
+            <p className="text-2xl lg:text-3xl font-bold mt-1">Rp {stats.totalSPP.toLocaleString('id-ID')}</p>
             <p className="text-emerald-200 text-xs mt-1">{bulanIni}</p>
           </div>
           <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
@@ -127,10 +88,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick Access */}
       <div className="mt-4 bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <h2 className="text-base font-semibold text-gray-700 mb-3">Akses Cepat</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {[
             { label: 'Santri', href: '/admin/santri', icon: Users, color: 'text-blue-500 bg-blue-50' },
             { label: 'Guru', href: '/admin/guru', icon: GraduationCap, color: 'text-emerald-500 bg-emerald-50' },
@@ -139,8 +99,7 @@ export default function DashboardPage() {
             { label: 'Penilaian', href: '/admin/penilaian', icon: TrendingUp, color: 'text-pink-500 bg-pink-50' },
             { label: 'SPP', href: '/admin/pembayaran', icon: Wallet, color: 'text-amber-500 bg-amber-50' },
           ].map(({ label, href, icon: Icon, color }) => (
-            <a key={href} href={href}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition text-center">
+            <a key={href} href={href} className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition text-center">
               <div className={`p-2.5 rounded-xl ${color.split(' ')[1]}`}>
                 <Icon size={18} className={color.split(' ')[0]} />
               </div>
