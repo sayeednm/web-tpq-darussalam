@@ -76,26 +76,26 @@ export default function PembayaranPage() {
       </div>
 
       {/* Filter + Total */}
-      <div className="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
-        <div className="flex flex-wrap gap-3 items-end">
-          <div>
+      <div className="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100 space-y-3">
+        <div className="flex gap-3">
+          <div className="flex-1">
             <label className="block text-xs font-medium text-gray-500 mb-1">Bulan</label>
             <select value={filterBulan} onChange={e => setFilterBulan(e.target.value)}
-              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50">
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50">
               {bulanList.map(b => <option key={b} value={b}>{b}</option>)}
             </select>
           </div>
-          <div>
+          <div className="flex-1">
             <label className="block text-xs font-medium text-gray-500 mb-1">Tahun</label>
             <select value={filterTahun} onChange={e => setFilterTahun(Number(e.target.value))}
-              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50">
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50">
               {tahunList.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
-          <div className="ml-auto bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2.5 rounded-xl text-white">
-            <p className="text-xs text-emerald-100">Total Terkumpul</p>
-            <p className="text-base font-bold">Rp {totalLunas.toLocaleString('id-ID')}</p>
-          </div>
+        </div>
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 rounded-xl text-white flex items-center justify-between">
+          <p className="text-sm text-emerald-100">Total Terkumpul</p>
+          <p className="text-lg font-bold">Rp {totalLunas.toLocaleString('id-ID')}</p>
         </div>
       </div>
 
