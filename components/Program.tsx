@@ -6,24 +6,24 @@ import { Baby, BookOpen, GraduationCap, Clock } from 'lucide-react'
 const programs = [
   {
     icon: Baby,
-    title: 'Kelas Pra-TK',
+    title: 'Pra Jilid',
     age: 'Usia 4-5 Tahun',
-    description: 'Pengenalan huruf hijaiyah dengan metode bermain yang menyenangkan dan sesuai perkembangan anak.',
+    description: 'Pengenalan huruf hijaiyah dan pembiasaan duduk belajar dengan metode bermain yang menyenangkan sesuai perkembangan anak.',
     features: ['Pengenalan huruf hijaiyah', 'Metode bermain sambil belajar', 'Durasi 60 menit'],
   },
   {
     icon: BookOpen,
-    title: 'Kelas Dasar',
-    age: 'Usia 6-12 Tahun',
-    description: 'Pembelajaran Al-Qur&apos;an dari dasar hingga lancar dengan Metode Ummi yang terstruktur.',
-    features: ['Belajar tajwid & tartil', 'Jilid 1-6 Metode Ummi', 'Durasi 90 menit'],
+    title: 'Jilid 1 – 6',
+    age: 'Usia 5-12 Tahun',
+    description: 'Pembelajaran membaca Al-Qur\'an secara bertahap dari Jilid 1 hingga Jilid 6 menggunakan Metode Ummi yang terstruktur dan teruji.',
+    features: ['Jilid 1 s/d Jilid 6 Metode Ummi', 'Belajar makhraj & pelafalan', 'Durasi 90 menit'],
   },
   {
     icon: GraduationCap,
-    title: 'Kelas Dewasa/Tahsin',
-    age: 'Remaja & Dewasa',
-    description: 'Program tahsin untuk memperbaiki bacaan Al-Qur&apos;an bagi remaja dan dewasa.',
-    features: ['Perbaikan tajwid', 'Tartil & makhorijul huruf', 'Jadwal fleksibel'],
+    title: 'Gharib, Tajwid & Al-Quran',
+    age: 'Semua Usia',
+    description: 'Program lanjutan setelah Jilid 6: memahami bacaan gharib, memperdalam ilmu tajwid, dan membaca Al-Qur\'an dengan tartil sempurna.',
+    features: ['Ghoroibul Qur\'an & Musykilat', 'Tajwid dasar & lanjutan', 'Tartil Al-Qur\'an 30 Juz'],
   },
 ]
 

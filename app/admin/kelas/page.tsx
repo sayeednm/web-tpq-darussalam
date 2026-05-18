@@ -7,6 +7,19 @@ import { Plus, Pencil, Trash2, X, BookOpen } from 'lucide-react'
 
 const emptyForm: Omit<Kelas, 'id'> = { nama: '', level: '', guruId: '', kapasitas: 20 }
 
+const levelUmmi = [
+  'Pra Jilid',
+  'Jilid 1',
+  'Jilid 2',
+  'Jilid 3',
+  'Jilid 4',
+  'Jilid 5',
+  'Jilid 6',
+  'Gharib',
+  'Tajwid',
+  'Al-Quran',
+]
+
 export default function KelasPage() {
   const [data, setData] = useState<Kelas[]>([])
   const [guruList, setGuruList] = useState<Guru[]>([])
@@ -143,8 +156,7 @@ export default function KelasPage() {
             </div>
             <div className="p-5 space-y-4">
               {[
-                { label: 'Nama Kelas', key: 'nama', placeholder: 'Contoh: Kelas A' },
-                { label: 'Level / Jilid', key: 'level', placeholder: 'Contoh: Jilid 1, Al-Quran' },
+                { label: 'Nama Kelas', key: 'nama', placeholder: 'Contoh: Jilid 1 - Kelas A' },
               ].map(({ label, key, placeholder }) => (
                 <div key={key}>
                   <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>
@@ -153,6 +165,14 @@ export default function KelasPage() {
                     className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50" />
                 </div>
               ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1.5">Level / Jilid (Metode Ummi)</label>
+                <select value={form.level} onChange={e => setForm(f => ({ ...f, level: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50">
+                  <option value="">-- Pilih Level --</option>
+                  {levelUmmi.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1.5">Guru Pengampu</label>
                 <select value={form.guruId} onChange={e => setForm(f => ({ ...f, guruId: e.target.value }))}

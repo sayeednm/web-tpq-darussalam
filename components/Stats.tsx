@@ -2,35 +2,57 @@
 
 import { motion } from 'framer-motion'
 import { Users, BookOpen, Award, Heart } from 'lucide-react'
-
-const stats = [
-  {
-    icon: Users,
-    number: '500+',
-    label: 'Santri Aktif',
-    color: 'emerald',
-  },
-  {
-    icon: BookOpen,
-    number: '10+',
-    label: 'Tahun Pengalaman',
-    color: 'amber',
-  },
-  {
-    icon: Award,
-    number: '15+',
-    label: 'Guru Bersertifikat',
-    color: 'emerald',
-  },
-  {
-    icon: Heart,
-    number: '98%',
-    label: 'Kepuasan Orang Tua',
-    color: 'amber',
-  },
-]
+import { useEffect, useState } from 'react'
+import { collection, getCountFromServer } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 export default function Stats() {
+  const [santriCount, setSantriCount] = useState<number | null>(null)
+  const [guruCount, setGuruCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [santriSnap, guruSnap] = await Promise.all([
+          getCountFromServer(collection(db, 'santri')),
+          getCountFromServer(collection(db, 'guru')),
+        ])
+        setSantriCount(santriSnap.data().count)
+        setGuruCount(guruSnap.data().count)
+      } catch {
+        // fallback ke null, tampilkan tanda '-'
+      }
+    }
+    fetchCounts()
+  }, [])
+
+  const stats = [
+    {
+      icon: Users,
+      number: santriCount !== null ? `${santriCount}` : '–',
+      label: 'Santri Aktif',
+      color: 'emerald',
+    },
+    {
+      icon: BookOpen,
+      number: '10+',
+      label: 'Tahun Pengalaman',
+      color: 'amber',
+    },
+    {
+      icon: Award,
+      number: guruCount !== null ? `${guruCount}` : '–',
+      label: 'Guru Bersertifikat',
+      color: 'emerald',
+    },
+    {
+      icon: Heart,
+      number: '98%',
+      label: 'Kepuasan Orang Tua',
+      color: 'amber',
+    },
+  ]
+
   return (
     <section className="relative py-16 overflow-hidden">
       {/* Background */}

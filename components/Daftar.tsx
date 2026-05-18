@@ -7,9 +7,16 @@ import { addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
 const programOptions = [
-  'Kelas Pra-TK (4-5 Tahun)',
-  'Kelas Dasar (6-12 Tahun)',
-  'Kelas Dewasa/Tahsin',
+  'Pra Jilid (4-5 Tahun)',
+  'Jilid 1',
+  'Jilid 2',
+  'Jilid 3',
+  'Jilid 4',
+  'Jilid 5',
+  'Jilid 6',
+  'Gharib',
+  'Tajwid',
+  'Al-Quran',
 ]
 
 export default function Daftar() {
