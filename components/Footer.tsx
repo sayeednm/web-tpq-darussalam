@@ -82,8 +82,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-emerald-700/50 pt-8 text-center">
+        <div className="border-t border-emerald-700/50 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-emerald-200">&copy; {new Date().getFullYear()} TPQ Darussalam. All rights reserved.</p>
+          <a href="/admin/login" className="text-emerald-500 hover:text-emerald-300 text-xs transition-colors">
+            Admin
+          </a>
         </div>
       </div>
     </footer>

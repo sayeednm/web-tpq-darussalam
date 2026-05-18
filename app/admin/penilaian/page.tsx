@@ -37,7 +37,7 @@ export default function PenilaianPage() {
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setForm(emptyForm); setEditId(null); setShowModal(true) }
-  const openEdit = (p: Penilaian) => { setForm({ ...p }); setEditId(p.id!); setShowModal(true) }
+  const openEdit = (p: Penilaian) => { setForm({ ...p, catatan: p.catatan || '' }); setEditId(p.id!); setShowModal(true) }
 
   const handleSantriChange = (id: string) => {
     const s = santriList.find(x => x.id === id)
