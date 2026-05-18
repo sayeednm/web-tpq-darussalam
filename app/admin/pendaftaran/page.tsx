@@ -51,7 +51,7 @@ export default function PendaftaranPage() {
   useEffect(() => { load() }, [])
 
   const filtered = useMemo(() => data.filter(d => {
-    const matchSearch = d.nama.toLowerCase().includes(search.toLowerCase()) || d.telepon.includes(search)
+    const matchSearch = d.nama.toLowerCase().includes(search.toLowerCase()) || (d.telepon ?? '').includes(search)
     const matchStatus = filterStatus ? d.status === filterStatus : true
     return matchSearch && matchStatus
   }), [data, search, filterStatus])
@@ -199,7 +199,7 @@ export default function PendaftaranPage() {
                       className="flex-1 py-2 text-xs font-medium bg-red-50 text-red-700 rounded-xl hover:bg-red-100 transition">
                       Tolak
                     </button>
-                    <a href={`https://wa.me/${p.telepon.replace(/\D/g, '').replace(/^0/, '62')}`}
+                    <a href={`https://wa.me/${(p.telepon ?? '').replace(/\D/g, '').replace(/^0/, '62')}`}
                       target="_blank" rel="noopener noreferrer"
                       className="flex-1 py-2 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition text-center">
                       WA
