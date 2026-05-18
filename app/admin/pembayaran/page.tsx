@@ -42,7 +42,7 @@ export default function PembayaranPage() {
   const filtered = data.filter(d => d.bulan === filterBulan && d.tahun === filterTahun)
 
   const openAdd = () => { setForm(emptyForm); setEditId(null); setShowModal(true) }
-  const openEdit = (p: Pembayaran) => { setForm({ ...p, tanggalBayar: p.tanggalBayar || '' }); setEditId(p.id!); setShowModal(true) }
+  const openEdit = (p: Pembayaran) => { setForm({ ...p, tanggalBayar: p.tanggalBayar || '', keterangan: p.keterangan || '' }); setEditId(p.id!); setShowModal(true) }
 
   const handleSantriChange = (id: string) => {
     const s = santriList.find(x => x.id === id)
