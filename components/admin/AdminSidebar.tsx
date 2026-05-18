@@ -16,10 +16,12 @@ import {
   Menu,
   X,
   BookMarked,
+  ClipboardCheck,
 } from 'lucide-react'
 
 const menus = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/pendaftaran', label: 'Pendaftaran', icon: ClipboardCheck },
   { href: '/admin/santri', label: 'Data Santri', icon: Users },
   { href: '/admin/guru', label: 'Data Guru', icon: GraduationCap },
   { href: '/admin/kelas', label: 'Kelas', icon: BookOpen },

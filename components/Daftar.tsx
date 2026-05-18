@@ -1,8 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Send, User, Mail, Phone, MessageSquare } from 'lucide-react'
+import { Send, User, Mail, Phone, MessageSquare, CheckCircle } from 'lucide-react'
 import { useState, FormEvent } from 'react'
+import { addDoc, collection } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 export default function Daftar() {
   const [formData, setFormData] = useState({
@@ -13,12 +15,23 @@ export default function Daftar() {
     program: '',
     pesan: ''
   })
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    
-    // Format pesan WhatsApp
-    const message = `*PENDAFTARAN SANTRI BARU*
+    setLoading(true)
+
+    try {
+      // Simpan ke Firestore
+      await addDoc(collection(db, 'pendaftaran'), {
+        ...formData,
+        status: 'baru',
+        createdAt: new Date().toISOString(),
+      })
+
+      // Kirim ke WhatsApp
+      const message = `*PENDAFTARAN SANTRI BARU*
 *TPQ Darussalam*
 
 *Nama Lengkap:* ${formData.nama}
@@ -30,27 +43,25 @@ ${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}
 
 _Terima kasih telah mendaftar di TPQ Darussalam!_`
 
-    // Nomor WhatsApp TPQ (ganti dengan nomor WhatsApp TPQ Anda)
-    const phoneNumber = '6289528036024' // Format: 62 + nomor tanpa 0 di depan
-    
-    // Encode pesan untuk URL
-    const encodedMessage = encodeURIComponent(message)
-    
-    // Buka WhatsApp
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
-    window.open(whatsappURL, '_blank')
+      const phoneNumber = '6289528036024'
+      const encodedMessage = encodeURIComponent(message)
+      window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank')
+
+      setSuccess(true)
+      setFormData({ nama: '', usia: '', email: '', telepon: '', program: '', pesan: '' })
+    } catch (err) {
+      console.error('Gagal menyimpan pendaftaran:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   return (
     <section id="daftar" className="relative py-20 overflow-hidden">
-      {/* Background dengan gradient dan pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -69,9 +80,7 @@ _Terima kasih telah mendaftar di TPQ Darussalam!_`
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Daftar Sekarang
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Daftar Sekarang</h2>
           <p className="text-lg text-gray-600">
             Bergabunglah bersama kami dan mulai perjalanan menghafal Al-Qur&apos;an dengan Metode Ummi
           </p>
@@ -84,127 +93,92 @@ _Terima kasih telah mendaftar di TPQ Darussalam!_`
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nama Lengkap
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    id="nama"
-                    name="nama"
-                    value={formData.nama}
-                    onChange={handleChange}
-                    required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                    placeholder="Nama santri"
-                  />
+          {success ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={36} className="text-emerald-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
+              <p className="text-gray-500 mb-6">Data kamu sudah kami terima. WhatsApp akan terbuka untuk konfirmasi.</p>
+              <button onClick={() => setSuccess(false)}
+                className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition">
+                Daftar Lagi
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input type="text" id="nama" name="nama" value={formData.nama} onChange={handleChange} required
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                      placeholder="Nama santri" />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="usia" className="block text-sm font-medium text-gray-700 mb-2">Usia</label>
+                  <input type="number" id="usia" name="usia" value={formData.usia} onChange={handleChange} required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Usia santri" />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="usia" className="block text-sm font-medium text-gray-700 mb-2">
-                  Usia
-                </label>
-                <input
-                  type="number"
-                  id="usia"
-                  name="usia"
-                  value={formData.usia}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                  placeholder="Usia santri"
-                />
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Orang Tua</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="email@example.com" />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Orang Tua
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                  placeholder="email@example.com"
-                />
+              <div>
+                <label htmlFor="telepon" className="block text-sm font-medium text-gray-700 mb-2">No. Telepon</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input type="tel" id="telepon" name="telepon" value={formData.telepon} onChange={handleChange} required
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="+62 812-3456-7890" />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="telepon" className="block text-sm font-medium text-gray-700 mb-2">
-                No. Telepon
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="tel"
-                  id="telepon"
-                  name="telepon"
-                  value={formData.telepon}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                  placeholder="+62 812-3456-7890"
-                />
+              <div>
+                <label htmlFor="program" className="block text-sm font-medium text-gray-700 mb-2">Program yang Diminati</label>
+                <select id="program" name="program" value={formData.program} onChange={handleChange} required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
+                  <option value="">Pilih Program</option>
+                  <option value="Kelas Pra-TK (4-5 Tahun)">Kelas Pra-TK (4-5 Tahun)</option>
+                  <option value="Kelas Dasar (6-12 Tahun)">Kelas Dasar (6-12 Tahun)</option>
+                  <option value="Kelas Dewasa/Tahsin">Kelas Dewasa/Tahsin</option>
+                </select>
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="program" className="block text-sm font-medium text-gray-700 mb-2">
-                Program yang Diminati
-              </label>
-              <select
-                id="program"
-                name="program"
-                value={formData.program}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-              >
-                <option value="">Pilih Program</option>
-                <option value="Kelas Pra-TK (4-5 Tahun)">Kelas Pra-TK (4-5 Tahun)</option>
-                <option value="Kelas Dasar (6-12 Tahun)">Kelas Dasar (6-12 Tahun)</option>
-                <option value="Kelas Dewasa/Tahsin">Kelas Dewasa/Tahsin</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="pesan" className="block text-sm font-medium text-gray-700 mb-2">
-                Pesan (Opsional)
-              </label>
-              <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <textarea
-                  id="pesan"
-                  name="pesan"
-                  value={formData.pesan}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
-                  placeholder="Pesan atau pertanyaan..."
-                ></textarea>
+              <div>
+                <label htmlFor="pesan" className="block text-sm font-medium text-gray-700 mb-2">Pesan (Opsional)</label>
+                <div className="relative">
+                  <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                  <textarea id="pesan" name="pesan" value={formData.pesan} onChange={handleChange} rows={4}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
+                    placeholder="Pesan atau pertanyaan..."></textarea>
+                </div>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-4 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform"
-            >
-              <span>Kirim via WhatsApp</span>
-              <Send className="w-5 h-5" />
-            </button>
-          </form>
+              <button type="submit" disabled={loading}
+                className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-4 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100">
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <span>Kirim via WhatsApp</span>
+                    <Send className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
         </motion.div>
       </div>
     </section>
