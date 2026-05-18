@@ -1,16 +1,25 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { collection, getDocs, updateDoc, doc, orderBy, query } from 'firebase/firestore'
+import { collection, getDocs, updateDoc, doc, orderBy, query, addDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { CheckCircle, XCircle, Clock, Phone, Mail, User, Search } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, Phone, Mail, User, Search, UserPlus } from 'lucide-react'
+import { addSantri } from '@/lib/firestore'
 
 interface Pendaftaran {
   id: string
   nama: string
-  usia: string
-  email: string
-  telepon: string
+  usia?: string
+  tempatLahir?: string
+  tanggalLahir?: string
+  jenisKelamin?: 'L' | 'P'
+  alamat?: string
+  namaAyah?: string
+  namaIbu?: string
+  noHpOrtu?: string
+  // legacy fields
+  email?: string
+  telepon?: string
   program: string
   pesan?: string
   status: 'baru' | 'diproses' | 'diterima' | 'ditolak'
@@ -29,6 +38,7 @@ export default function PendaftaranPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
+  const [accepting, setAccepting] = useState<string | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -51,6 +61,32 @@ export default function PendaftaranPage() {
     setData(prev => prev.map(d => d.id === id ? { ...d, status } : d))
   }
 
+  // Terima = update status + otomatis tambah ke data santri dengan data lengkap
+  const handleTerima = async (p: Pendaftaran) => {
+    if (!confirm(`Terima "${p.nama}" dan tambahkan ke Data Santri?`)) return
+    setAccepting(p.id)
+    try {
+      await addSantri({
+        nama: p.nama,
+        tempatLahir: p.tempatLahir || '',
+        tanggalLahir: p.tanggalLahir || '',
+        jenisKelamin: p.jenisKelamin || 'L',
+        alamat: p.alamat || '',
+        namaAyah: p.namaAyah || '',
+        namaIbu: p.namaIbu || '',
+        noHpOrtu: p.noHpOrtu || p.telepon || '',
+        kelasId: '',
+        tanggalMasuk: new Date().toISOString().split('T')[0],
+        status: 'aktif',
+      })
+      await updateDoc(doc(db, 'pendaftaran', p.id), { status: 'diterima' })
+      setData(prev => prev.map(d => d.id === p.id ? { ...d, status: 'diterima' } : d))
+      alert(`${p.nama} berhasil ditambahkan ke Data Santri! Lengkapi kelas di menu Data Santri.`)
+    } finally {
+      setAccepting(null)
+    }
+  }
+
   const stats = {
     baru: data.filter(d => d.status === 'baru').length,
     diterima: data.filter(d => d.status === 'diterima').length,
@@ -61,7 +97,7 @@ export default function PendaftaranPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-800">Pendaftaran Masuk</h1>
-        <p className="text-gray-500 text-sm mt-0.5">Data calon santri dari form pendaftaran</p>
+        <p className="text-gray-500 text-sm mt-0.5">Data calon santri dari form pendaftaran landing page</p>
       </div>
 
       {/* Stats */}
@@ -111,8 +147,11 @@ export default function PendaftaranPage() {
             const StatusIcon = cfg.icon
             return (
               <div key={p.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-sm font-bold text-emerald-600 flex-shrink-0">
+                    {p.nama.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-gray-800">{p.nama}</h3>
                       <span className="text-xs text-gray-400">· {p.usia} tahun</span>
@@ -123,11 +162,21 @@ export default function PendaftaranPage() {
                     </div>
                     <p className="text-sm text-emerald-600 font-medium mt-1">{p.program}</p>
                     <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
-                      <span className="flex items-center gap-1"><Phone size={11} />{p.telepon}</span>
-                      <span className="flex items-center gap-1"><Mail size={11} />{p.email}</span>
+                      <span className="flex items-center gap-1"><Phone size={11} />{p.noHpOrtu || p.telepon}</span>
+                      {p.alamat && <span className="flex items-center gap-1"><Mail size={11} />{p.alamat}</span>}
                     </div>
+                    {(p.namaAyah || p.namaIbu) && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ayah: {p.namaAyah || '-'} · Ibu: {p.namaIbu || '-'}
+                      </p>
+                    )}
+                    {p.tanggalLahir && (
+                      <p className="text-xs text-gray-400 mt-0.5">TTL: {p.tempatLahir}, {p.tanggalLahir}</p>
+                    )}
                     {p.pesan && <p className="text-xs text-gray-400 mt-2 italic">"{p.pesan}"</p>}
-                    <p className="text-xs text-gray-300 mt-2">{new Date(p.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                    <p className="text-xs text-gray-300 mt-1">
+                      {new Date(p.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </p>
                   </div>
                 </div>
 
@@ -138,9 +187,13 @@ export default function PendaftaranPage() {
                       className="flex-1 py-2 text-xs font-medium bg-yellow-50 text-yellow-700 rounded-xl hover:bg-yellow-100 transition">
                       Proses
                     </button>
-                    <button onClick={() => updateStatus(p.id, 'diterima')}
-                      className="flex-1 py-2 text-xs font-medium bg-green-50 text-green-700 rounded-xl hover:bg-green-100 transition">
-                      Terima
+                    <button onClick={() => handleTerima(p)} disabled={accepting === p.id}
+                      className="flex-1 py-2 text-xs font-medium bg-green-50 text-green-700 rounded-xl hover:bg-green-100 transition flex items-center justify-center gap-1 disabled:opacity-50">
+                      {accepting === p.id ? (
+                        <div className="w-3 h-3 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <><UserPlus size={11} /> Terima</>
+                      )}
                     </button>
                     <button onClick={() => updateStatus(p.id, 'ditolak')}
                       className="flex-1 py-2 text-xs font-medium bg-red-50 text-red-700 rounded-xl hover:bg-red-100 transition">
@@ -149,7 +202,18 @@ export default function PendaftaranPage() {
                     <a href={`https://wa.me/${p.telepon.replace(/\D/g, '').replace(/^0/, '62')}`}
                       target="_blank" rel="noopener noreferrer"
                       className="flex-1 py-2 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition text-center">
-                      WhatsApp
+                      WA
+                    </a>
+                  </div>
+                )}
+
+                {/* Sudah diterima — link ke data santri */}
+                {p.status === 'diterima' && (
+                  <div className="mt-4 pt-4 border-t border-gray-50">
+                    <a href="/admin/santri"
+                      className="flex items-center justify-center gap-2 py-2 text-xs font-medium text-emerald-600 hover:text-emerald-700 transition">
+                      <CheckCircle size={13} />
+                      Sudah masuk Data Santri — Lengkapi datanya
                     </a>
                   </div>
                 )}

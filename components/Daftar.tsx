@@ -1,182 +1,265 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Send, User, Mail, Phone, MessageSquare, CheckCircle } from 'lucide-react'
+import { Send, User, Phone, MessageSquare, CheckCircle, MapPin, Calendar, Users } from 'lucide-react'
 import { useState, FormEvent } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
+const programOptions = [
+  'Kelas Pra-TK (4-5 Tahun)',
+  'Kelas Dasar (6-12 Tahun)',
+  'Kelas Dewasa/Tahsin',
+]
+
 export default function Daftar() {
   const [formData, setFormData] = useState({
+    // Data Santri
     nama: '',
-    usia: '',
-    email: '',
-    telepon: '',
+    tanggalLahir: '',
+    tempatLahir: '',
+    jenisKelamin: 'L',
+    alamat: '',
+    // Data Orang Tua
+    namaAyah: '',
+    namaIbu: '',
+    noHpOrtu: '',
+    // Program
     program: '',
-    pesan: ''
+    pesan: '',
   })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [step, setStep] = useState(1) // multi-step form
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData(f => ({ ...f, [e.target.name]: e.target.value }))
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
-      // Simpan ke Firestore
       await addDoc(collection(db, 'pendaftaran'), {
         ...formData,
         status: 'baru',
         createdAt: new Date().toISOString(),
       })
 
-      // Kirim ke WhatsApp
-      const message = `*PENDAFTARAN SANTRI BARU*
-*TPQ Darussalam*
-
-*Nama Lengkap:* ${formData.nama}
-*Usia:* ${formData.usia} tahun
-*Email Orang Tua:* ${formData.email}
-*No. Telepon:* ${formData.telepon}
-*Program:* ${formData.program}
-${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}
-
-_Terima kasih telah mendaftar di TPQ Darussalam!_`
+      // WhatsApp notification
+      const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n*Nama Ayah:* ${formData.namaAyah}\n*Nama Ibu:* ${formData.namaIbu}\n*No HP:* ${formData.noHpOrtu}\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
 
       const phoneNumber = '6289528036024'
-      const encodedMessage = encodeURIComponent(message)
-      window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank')
-
+      window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
       setSuccess(true)
-      setFormData({ nama: '', usia: '', email: '', telepon: '', program: '', pesan: '' })
     } catch (err) {
-      console.error('Gagal menyimpan pendaftaran:', err)
+      console.error(err)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const Field = ({ label, icon: Icon, children }: { label: string; icon?: any; children: React.ReactNode }) => (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      {Icon ? (
+        <div className="relative">
+          <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <div className="pl-10">{children}</div>
+        </div>
+      ) : children}
+    </div>
+  )
+
+  const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
+  const inputWithIconClass = "w-full pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
 
   return (
     <section id="daftar" className="relative py-20 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2316a34a' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
-        </div>
-        <div className="absolute top-20 left-20 w-64 h-64 bg-emerald-300 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-amber-300 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 bg-emerald-300 rounded-full opacity-20 blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-amber-300 rounded-full opacity-20 blur-3xl" />
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+      <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Daftar Sekarang</h2>
-          <p className="text-lg text-gray-600">
-            Bergabunglah bersama kami dan mulai perjalanan menghafal Al-Qur&apos;an dengan Metode Ummi
-          </p>
+          <p className="text-lg text-gray-600">Isi formulir berikut untuk mendaftarkan putra/putri Anda</p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }} className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+
           {success ? (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle size={36} className="text-emerald-600" />
+            <div className="p-10 text-center">
+              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <CheckCircle size={40} className="text-emerald-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
-              <p className="text-gray-500 mb-6">Data kamu sudah kami terima. WhatsApp akan terbuka untuk konfirmasi.</p>
-              <button onClick={() => setSuccess(false)}
-                className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
+              <p className="text-gray-500 mb-2">Data pendaftaran sudah kami terima.</p>
+              <p className="text-gray-500 mb-8">WhatsApp akan terbuka untuk konfirmasi langsung dengan admin.</p>
+              <button onClick={() => { setSuccess(false); setStep(1) }}
+                className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">
                 Daftar Lagi
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input type="text" id="nama" name="nama" value={formData.nama} onChange={handleChange} required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                      placeholder="Nama santri" />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="usia" className="block text-sm font-medium text-gray-700 mb-2">Usia</label>
-                  <input type="number" id="usia" name="usia" value={formData.usia} onChange={handleChange} required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                    placeholder="Usia santri" />
-                </div>
+            <form onSubmit={handleSubmit}>
+              {/* Step indicator */}
+              <div className="flex border-b border-gray-100">
+                {['Data Santri', 'Data Orang Tua', 'Program'].map((label, i) => (
+                  <button key={i} type="button" onClick={() => setStep(i + 1)}
+                    className={`flex-1 py-4 text-xs font-semibold transition-all ${step === i + 1 ? 'text-emerald-600 border-b-2 border-emerald-600 bg-emerald-50/50' : 'text-gray-400 hover:text-gray-600'}`}>
+                    <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs mr-1.5 ${step === i + 1 ? 'bg-emerald-600 text-white' : step > i + 1 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
+                      {step > i + 1 ? '✓' : i + 1}
+                    </span>
+                    {label}
+                  </button>
+                ))}
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Orang Tua</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                    placeholder="email@example.com" />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="telepon" className="block text-sm font-medium text-gray-700 mb-2">No. Telepon</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input type="tel" id="telepon" name="telepon" value={formData.telepon} onChange={handleChange} required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                    placeholder="+62 812-3456-7890" />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="program" className="block text-sm font-medium text-gray-700 mb-2">Program yang Diminati</label>
-                <select id="program" name="program" value={formData.program} onChange={handleChange} required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
-                  <option value="">Pilih Program</option>
-                  <option value="Kelas Pra-TK (4-5 Tahun)">Kelas Pra-TK (4-5 Tahun)</option>
-                  <option value="Kelas Dasar (6-12 Tahun)">Kelas Dasar (6-12 Tahun)</option>
-                  <option value="Kelas Dewasa/Tahsin">Kelas Dewasa/Tahsin</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="pesan" className="block text-sm font-medium text-gray-700 mb-2">Pesan (Opsional)</label>
-                <div className="relative">
-                  <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <textarea id="pesan" name="pesan" value={formData.pesan} onChange={handleChange} rows={4}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
-                    placeholder="Pesan atau pertanyaan..."></textarea>
-                </div>
-              </div>
-
-              <button type="submit" disabled={loading}
-                className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-4 rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all font-bold flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl hover:scale-105 transform disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100">
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
+              <div className="p-6 sm:p-8 space-y-5">
+                {/* Step 1: Data Santri */}
+                {step === 1 && (
                   <>
-                    <span>Kirim via WhatsApp</span>
-                    <Send className="w-5 h-5" />
+                    <div className="grid sm:grid-cols-2 gap-5">
+                      <div className="sm:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap Santri</label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="text" name="nama" value={formData.nama} onChange={handleChange} required
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="Nama lengkap santri" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir</label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="text" name="tempatLahir" value={formData.tempatLahir} onChange={handleChange} required
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="Kota lahir" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir</label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="date" name="tanggalLahir" value={formData.tanggalLahir} onChange={handleChange} required
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin</label>
+                        <select name="jenisKelamin" value={formData.jenisKelamin} onChange={handleChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm">
+                          <option value="L">Laki-laki</option>
+                          <option value="P">Perempuan</option>
+                        </select>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap</label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                          <textarea name="alamat" value={formData.alamat} onChange={handleChange} required rows={2}
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm resize-none"
+                            placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota" />
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" onClick={() => setStep(2)}
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold transition">
+                      Lanjut →
+                    </button>
                   </>
                 )}
-              </button>
+
+                {/* Step 2: Data Orang Tua */}
+                {step === 2 && (
+                  <>
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ayah</label>
+                        <div className="relative">
+                          <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="text" name="namaAyah" value={formData.namaAyah} onChange={handleChange} required
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="Nama lengkap ayah" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ibu</label>
+                        <div className="relative">
+                          <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="text" name="namaIbu" value={formData.namaIbu} onChange={handleChange} required
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="Nama lengkap ibu" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <input type="tel" name="noHpOrtu" value={formData.noHpOrtu} onChange={handleChange} required
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="08xx-xxxx-xxxx" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <button type="button" onClick={() => setStep(1)}
+                        className="flex-1 border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition">
+                        ← Kembali
+                      </button>
+                      <button type="button" onClick={() => setStep(3)}
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold transition">
+                        Lanjut →
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* Step 3: Program */}
+                {step === 3 && (
+                  <>
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Program yang Diminati</label>
+                        <div className="space-y-2">
+                          {programOptions.map(opt => (
+                            <label key={opt} className={`flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer transition ${formData.program === opt ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                              <input type="radio" name="program" value={opt} checked={formData.program === opt} onChange={handleChange} className="text-emerald-600" required />
+                              <span className="text-sm font-medium text-gray-700">{opt}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Pesan / Pertanyaan <span className="text-gray-400 font-normal">(opsional)</span></label>
+                        <div className="relative">
+                          <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                          <textarea name="pesan" value={formData.pesan} onChange={handleChange} rows={3}
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm resize-none"
+                            placeholder="Ada pertanyaan atau hal yang ingin disampaikan?" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <button type="button" onClick={() => setStep(2)}
+                        className="flex-1 border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition">
+                        ← Kembali
+                      </button>
+                      <button type="submit" disabled={loading || !formData.program}
+                        className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition disabled:opacity-60 disabled:cursor-not-allowed">
+                        {loading ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <><Send className="w-4 h-4" /> Kirim Pendaftaran</>
+                        )}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </form>
           )}
         </motion.div>
