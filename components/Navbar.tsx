@@ -19,26 +19,24 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg shadow-lg z-50 border-b border-emerald-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 relative">
-              {/* Logo TPQ Darussalam - berbeda dari logo Metode Ummi */}
+          <div className="flex items-center space-x-2 min-w-0">
+            <div className="w-9 h-9 flex-shrink-0 relative">
               <img 
                 src="/logo-tpq.png" 
                 alt="Logo TPQ Darussalam" 
                 className="w-full h-full object-contain"
                 onError={(e) => {
-                  // Fallback jika logo belum ada
                   e.currentTarget.style.display = 'none';
                   e.currentTarget.nextElementSibling?.classList.remove('hidden');
                 }}
               />
-              <div className="hidden w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-white" />
+              <div className="hidden w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-white" />
               </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-emerald-700 leading-tight">TPQ Darussalam</span>
-              <span className="text-xs text-gray-600 leading-tight">Jl.Kemantren RT 06 RW 01, Keputran</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-lg font-bold text-emerald-700 leading-tight truncate">TPQ Darussalam</span>
+              <span className="text-xs text-gray-500 leading-tight hidden sm:block truncate">Jl.Kemantren RT 06 RW 01, Keputran</span>
             </div>
           </div>
 

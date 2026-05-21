@@ -23,13 +23,17 @@ export default function Daftar() {
   const [formData, setFormData] = useState({
     // Data Santri
     nama: '',
+    nik: '',
     tanggalLahir: '',
     tempatLahir: '',
     jenisKelamin: 'L',
     alamat: '',
-    // Data Orang Tua
+    // Data Orang Tua & KK
+    noKK: '',
     namaAyah: '',
+    nikAyah: '',
     namaIbu: '',
+    nikIbu: '',
     noHpOrtu: '',
     // Program
     program: '',
@@ -54,7 +58,7 @@ export default function Daftar() {
       })
 
       // WhatsApp notification
-      const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n*Nama Ayah:* ${formData.namaAyah}\n*Nama Ibu:* ${formData.namaIbu}\n*No HP:* ${formData.noHpOrtu}\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
+      const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
 
       const phoneNumber = '6289528036024'
       window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
@@ -82,11 +86,9 @@ export default function Daftar() {
   const inputWithIconClass = "w-full pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
 
   return (
-    <section id="daftar" className="relative py-20 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-amber-50">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-emerald-300 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-amber-300 rounded-full opacity-20 blur-3xl" />
-      </div>
+    <section id="daftar" className="relative py-20 overflow-hidden bg-amber-50">
+      <div className="absolute top-0 left-0 w-72 h-72 bg-amber-200 rounded-full opacity-40 blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-100 rounded-full opacity-50 blur-3xl translate-x-1/3 translate-y-1/3"></div>
 
       <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-10">
@@ -138,6 +140,15 @@ export default function Daftar() {
                             placeholder="Nama lengkap santri" />
                         </div>
                       </div>
+                      <div className="sm:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          NIK Santri <span className="text-gray-400 font-normal">(sesuai KK)</span>
+                        </label>
+                        <input type="text" name="nik" value={formData.nik} onChange={handleChange}
+                          inputMode="numeric" maxLength={16}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm font-mono tracking-wider"
+                          placeholder="16 digit NIK santri" />
+                      </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir</label>
                         <div className="relative">
@@ -184,24 +195,55 @@ export default function Daftar() {
                 {step === 2 && (
                   <>
                     <div className="space-y-5">
+                      {/* Info KK */}
+                      <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5 flex gap-2.5">
+                        <span className="text-emerald-500 text-lg leading-none">📋</span>
+                        <p className="text-xs text-emerald-700">Siapkan Kartu Keluarga (KK) untuk mengisi data berikut dengan benar.</p>
+                      </div>
+
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ayah</label>
-                        <div className="relative">
-                          <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <input type="text" name="namaAyah" value={formData.namaAyah} onChange={handleChange} required
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
-                            placeholder="Nama lengkap ayah" />
+                        <label className="block text-sm font-medium text-gray-700 mb-2">No. Kartu Keluarga (KK)</label>
+                        <input type="text" name="noKK" value={formData.noKK} onChange={handleChange}
+                          inputMode="numeric" maxLength={16}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm font-mono tracking-wider"
+                          placeholder="16 digit No. KK" />
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ayah</label>
+                          <div className="relative">
+                            <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input type="text" name="namaAyah" value={formData.namaAyah} onChange={handleChange} required
+                              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                              placeholder="Nama lengkap ayah" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">NIK Ayah</label>
+                          <input type="text" name="nikAyah" value={formData.nikAyah} onChange={handleChange}
+                            inputMode="numeric" maxLength={16}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm font-mono tracking-wider"
+                            placeholder="16 digit NIK Ayah" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ibu</label>
+                          <div className="relative">
+                            <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input type="text" name="namaIbu" value={formData.namaIbu} onChange={handleChange} required
+                              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                              placeholder="Nama lengkap ibu" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">NIK Ibu</label>
+                          <input type="text" name="nikIbu" value={formData.nikIbu} onChange={handleChange}
+                            inputMode="numeric" maxLength={16}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm font-mono tracking-wider"
+                            placeholder="16 digit NIK Ibu" />
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ibu</label>
-                        <div className="relative">
-                          <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <input type="text" name="namaIbu" value={formData.namaIbu} onChange={handleChange} required
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
-                            placeholder="Nama lengkap ibu" />
-                        </div>
-                      </div>
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
                         <div className="relative">

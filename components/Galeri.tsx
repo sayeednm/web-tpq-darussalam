@@ -73,17 +73,10 @@ export default function Galeri() {
     : photos.filter(photo => photo.category === activeCategory)
 
   return (
-    <section id="galeri" className="relative py-20 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-emerald-50/30 to-amber-50/30">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2316a34a' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
-        </div>
-        <div className="absolute top-20 right-20 w-72 h-72 bg-emerald-300 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300 rounded-full opacity-20 blur-3xl"></div>
-      </div>
+    <section id="galeri" className="relative py-20 overflow-hidden bg-slate-800">
+      {/* Dekorasi */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-600 rounded-full opacity-10 blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-500 rounded-full opacity-10 blur-3xl -translate-x-1/3 translate-y-1/3"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -94,10 +87,10 @@ export default function Galeri() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Galeri Kegiatan
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
             Dokumentasi kegiatan pembelajaran dan kebersamaan santri TPQ Darussalam
           </p>
         </motion.div>
@@ -118,8 +111,8 @@ export default function Galeri() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all ${
                   activeCategory === category.id
-                    ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg scale-105'
-                    : 'bg-white text-gray-700 hover:bg-emerald-50 border-2 border-gray-200 hover:border-emerald-300'
+                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 scale-105'
+                    : 'bg-white/10 text-slate-200 hover:bg-white/20 border border-white/20'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -156,10 +149,9 @@ export default function Galeri() {
                   </div>
                 </div>
 
-                {/* Caption */}
                 <div className="p-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{photo.title}</h3>
-                  <p className="text-gray-600 text-sm">{photo.description}</p>
+                  <p className="text-gray-500 text-sm">{photo.description}</p>
                 </div>
               </motion.div>
             )

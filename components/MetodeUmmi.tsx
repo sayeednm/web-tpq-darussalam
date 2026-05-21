@@ -36,26 +36,26 @@ export default function MetodeUmmi() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-6 font-medium">
+            <div className="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full mb-4 md:mb-6 font-medium text-sm">
               Metode Pembelajaran
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 drop-shadow-lg">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-6 drop-shadow-lg">
               Mengapa Metode Ummi?
             </h2>
-            <p className="text-lg text-emerald-50 mb-8 leading-relaxed drop-shadow">
+            <p className="text-base text-emerald-50 mb-6 leading-relaxed drop-shadow">
               Metode Ummi adalah sistem pembelajaran Al-Qur&apos;an yang telah terbukti efektif 
               dan digunakan oleh ribuan lembaga di Indonesia. Dengan pendekatan yang sistematis 
               dan menyenangkan, santri dapat membaca Al-Qur&apos;an dengan tartil dalam waktu relatif singkat.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {['Sistem pembelajaran terstruktur dan berjenjang', 
                 'Guru bersertifikat resmi Ummi Foundation',
                 'Evaluasi berkala untuk memastikan kualitas',
@@ -66,10 +66,10 @@ export default function MetodeUmmi() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm p-4 rounded-xl"
+                  className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm p-3 md:p-4 rounded-xl"
                 >
-                  <CheckCircle2 className="w-6 h-6 text-amber-300 flex-shrink-0 mt-0.5" />
-                  <span className="text-white font-medium">{item}</span>
+                  <CheckCircle2 className="w-5 h-5 text-amber-300 flex-shrink-0 mt-0.5" />
+                  <span className="text-white font-medium text-sm md:text-base">{item}</span>
                 </motion.div>
               ))}
             </div>
@@ -80,7 +80,7 @@ export default function MetodeUmmi() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-6"
+            className="space-y-4 mt-2"
           >
             {metodePrinsip.map((prinsip, index) => (
               <motion.div
@@ -89,16 +89,16 @@ export default function MetodeUmmi() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-xl border border-white/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                className="group bg-white/95 backdrop-blur-sm p-5 rounded-2xl shadow-xl border border-white/50 hover:shadow-2xl transition-all hover:-translate-y-1"
               >
                 <div className="flex items-start space-x-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                    <prinsip.icon className="w-7 h-7 text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+                    <prinsip.icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{prinsip.title}</h3>
+                    <h3 className="text-base font-bold text-gray-900 mb-1">{prinsip.title}</h3>
                     <p 
-                      className="text-gray-600"
+                      className="text-gray-600 text-sm"
                       dangerouslySetInnerHTML={{ __html: prinsip.description }}
                     />
                   </div>

@@ -19,37 +19,37 @@ export default function Hero() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm text-amber-600 px-5 py-2.5 rounded-full mb-6 shadow-lg">
-              <Sparkles className="w-5 h-5 fill-current" />
-              <span className="text-sm font-bold">Metode Ummi Bersertifikat</span>
+            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm text-amber-600 px-4 py-2 rounded-full mb-4 md:mb-6 shadow-lg">
+              <Sparkles className="w-4 h-4 fill-current" />
+              <span className="text-xs md:text-sm font-bold">Metode Ummi Bersertifikat</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 drop-shadow-lg">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4 md:mb-6 drop-shadow-lg">
               Membentuk Generasi{' '}
               <span className="text-amber-300">Qur'ani</span> yang Berakhlak Mulia
             </h1>
             
-            <p className="text-lg text-emerald-50 mb-8 leading-relaxed drop-shadow">
+            <p className="text-base md:text-lg text-emerald-50 mb-6 md:mb-8 leading-relaxed drop-shadow">
               TPQ Darussalam menggunakan Metode Ummi yang terbukti efektif dalam mengajarkan 
               Al-Qur&apos;an dengan tartil, tajwid yang benar, dan suasana yang menyenangkan.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <a
                 href="#daftar"
-                className="bg-amber-400 text-emerald-900 px-8 py-4 rounded-xl hover:bg-amber-300 transition-all font-bold text-center shadow-2xl hover:shadow-amber-400/50 hover:scale-105 transform"
+                className="bg-amber-400 text-emerald-900 px-6 py-3.5 rounded-xl hover:bg-amber-300 transition-all font-bold text-center shadow-2xl hover:shadow-amber-400/50 hover:scale-105 transform text-sm md:text-base"
               >
                 Daftar Sekarang
               </a>
               <a
                 href="#metode-ummi"
-                className="bg-white/90 backdrop-blur-sm text-emerald-700 px-8 py-4 rounded-xl hover:bg-white transition-all font-bold text-center border-2 border-white shadow-xl hover:scale-105 transform"
+                className="bg-white/90 backdrop-blur-sm text-emerald-700 px-6 py-3.5 rounded-xl hover:bg-white transition-all font-bold text-center border-2 border-white shadow-xl hover:scale-105 transform text-sm md:text-base"
               >
                 Pelajari Metode Ummi
               </a>
@@ -60,7 +60,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative"
+            className="relative hidden md:block"
           >
             {/* Card dengan glassmorphism effect */}
             <div className="relative bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20">
@@ -68,7 +68,6 @@ export default function Hero() {
               <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-white rounded-full opacity-20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
               
               <div className="relative bg-white rounded-2xl p-8 shadow-2xl">
-                {/* Logo Metode Ummi */}
                 <div className="w-40 h-40 mx-auto mb-4 relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-full opacity-20 blur-xl"></div>
                   <img 
