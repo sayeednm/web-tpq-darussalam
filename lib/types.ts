@@ -1,12 +1,16 @@
 export interface Santri {
   id?: string
   nama: string
+  nik?: string
+  noKK?: string
   tempatLahir: string
   tanggalLahir: string
   jenisKelamin: 'L' | 'P'
   alamat: string
   namaAyah: string
+  nikAyah?: string
   namaIbu: string
+  nikIbu?: string
   noHpOrtu: string
   kelasId: string
   tanggalMasuk: string
