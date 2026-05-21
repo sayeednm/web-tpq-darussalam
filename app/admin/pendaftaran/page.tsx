@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { collection, getDocs, updateDoc, doc, orderBy, query, addDoc } from 'firebase/firestore'
+import { collection, getDocs, updateDoc, doc, orderBy, query, deleteDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { CheckCircle, XCircle, Clock, Phone, Mail, User, Search, UserPlus } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, Phone, Mail, User, Search, UserPlus, Trash2 } from 'lucide-react'
 import { addSantri } from '@/lib/firestore'
 
 interface Pendaftaran {
@@ -59,6 +59,12 @@ export default function PendaftaranPage() {
   const updateStatus = async (id: string, status: Pendaftaran['status']) => {
     await updateDoc(doc(db, 'pendaftaran', id), { status })
     setData(prev => prev.map(d => d.id === id ? { ...d, status } : d))
+  }
+
+  const handleDelete = async (id: string, nama: string) => {
+    if (!confirm(`Hapus data pendaftaran "${nama}"? Tindakan ini tidak bisa dibatalkan.`)) return
+    await deleteDoc(doc(db, 'pendaftaran', id))
+    setData(prev => prev.filter(d => d.id !== id))
   }
 
   // Terima = update status + otomatis tambah ke data santri dengan data lengkap
@@ -180,7 +186,7 @@ export default function PendaftaranPage() {
                   </div>
                 </div>
 
-                {/* Action buttons */}
+                {/* Action buttons — belum diterima/ditolak */}
                 {p.status !== 'diterima' && p.status !== 'ditolak' && (
                   <div className="flex gap-2 mt-4 pt-4 border-t border-gray-50">
                     <button onClick={() => updateStatus(p.id, 'diproses')}
@@ -199,22 +205,44 @@ export default function PendaftaranPage() {
                       className="flex-1 py-2 text-xs font-medium bg-red-50 text-red-700 rounded-xl hover:bg-red-100 transition">
                       Tolak
                     </button>
-                    <a href={`https://wa.me/${(p.telepon ?? '').replace(/\D/g, '').replace(/^0/, '62')}`}
+                    <a href={`https://wa.me/${(p.noHpOrtu ?? p.telepon ?? '').replace(/\D/g, '').replace(/^0/, '62')}`}
                       target="_blank" rel="noopener noreferrer"
                       className="flex-1 py-2 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition text-center">
                       WA
                     </a>
+                    <button onClick={() => handleDelete(p.id, p.nama)}
+                      className="p-2 text-xs font-medium bg-gray-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition">
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 )}
 
-                {/* Sudah diterima — link ke data santri */}
+                {/* Sudah diterima */}
                 {p.status === 'diterima' && (
-                  <div className="mt-4 pt-4 border-t border-gray-50">
+                  <div className="flex gap-2 mt-4 pt-4 border-t border-gray-50">
                     <a href="/admin/santri"
-                      className="flex items-center justify-center gap-2 py-2 text-xs font-medium text-emerald-600 hover:text-emerald-700 transition">
+                      className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-medium text-emerald-600 hover:text-emerald-700 transition">
                       <CheckCircle size={13} />
                       Sudah masuk Data Santri — Lengkapi datanya
                     </a>
+                    <button onClick={() => handleDelete(p.id, p.nama)}
+                      className="p-2 text-xs font-medium bg-gray-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                )}
+
+                {/* Ditolak */}
+                {p.status === 'ditolak' && (
+                  <div className="flex gap-2 mt-4 pt-4 border-t border-gray-50">
+                    <button onClick={() => updateStatus(p.id, 'baru')}
+                      className="flex-1 py-2 text-xs font-medium bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition">
+                      Kembalikan ke Baru
+                    </button>
+                    <button onClick={() => handleDelete(p.id, p.nama)}
+                      className="flex-1 py-2 text-xs font-medium bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition flex items-center justify-center gap-1">
+                      <Trash2 size={13} /> Hapus
+                    </button>
                   </div>
                 )}
               </div>
