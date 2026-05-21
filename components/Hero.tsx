@@ -96,6 +96,13 @@ export default function Hero() {
           </motion.div>
         </div>
       </div>
+
+      {/* Wave ke section Stats */}
+      <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none">
+        <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" className="w-full h-16 block" preserveAspectRatio="none">
+          <path d="M0,30 C360,0 1080,60 1440,30 L1440,60 L0,60 Z" fill="white" />
+        </svg>
+      </div>
     </section>
   )
 }
