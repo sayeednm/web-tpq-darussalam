@@ -21,6 +21,7 @@ export default function Navbar() {
     { label: 'Metode Ummi', href: '#metode-ummi' },
     { label: 'Program', href: '#program' },
     { label: 'Galeri', href: '#galeri' },
+    { label: 'Donasi', href: '#donasi' },
     { label: 'Kontak', href: '#kontak' },
   ]
 

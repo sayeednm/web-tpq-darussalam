@@ -5,6 +5,7 @@ import Keunggulan from '@/components/Keunggulan'
 import MetodeUmmi from '@/components/MetodeUmmi'
 import Program from '@/components/Program'
 import Galeri from '@/components/Galeri'
+import Donasi from '@/components/Donasi'
 import Daftar from '@/components/Daftar'
 import Footer from '@/components/Footer'
 
@@ -18,6 +19,7 @@ export default function Home() {
       <MetodeUmmi />
       <Program />
       <Galeri />
+      <Donasi />
       <Daftar />
       <Footer />
     </main>

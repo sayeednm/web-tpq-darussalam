@@ -49,7 +49,25 @@ export default function Footer() {
                 <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-colors">
                   <Mail className="w-5 h-5 text-emerald-300" />
                 </div>
-                <span className="text-emerald-100">info@tpqdarussalam.com</span>
+                <span className="text-emerald-100">tpqdarussalam61@gmail.com</span>
+              </div>
+              <div className="flex items-center space-x-3 group">
+                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-colors">
+                  <BookOpen className="w-5 h-5 text-emerald-300" />
+                </div>
+                <div>
+                  <p className="text-xs text-emerald-400">No. Ijin Operasional</p>
+                  <span className="text-emerald-100">411235151742</span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 group">
+                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 transition-colors">
+                  <BookOpen className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <p className="text-xs text-emerald-400">No. Registrasi Ummi</p>
+                  <span className="text-emerald-100">19053515133</span>
+                </div>
               </div>
             </div>
           </div>

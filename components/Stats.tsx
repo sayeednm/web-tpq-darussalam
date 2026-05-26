@@ -146,7 +146,7 @@ export default function Stats() {
                   <p>Belum ada data guru</p>
                 </div>
               ) : guruList.map((g, i) => (
-                <div key={g.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                <div key={g.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-2xl">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0 ${
                     g.jenisKelamin === 'P' ? 'bg-pink-100 text-pink-600' : 'bg-emerald-100 text-emerald-600'
                   }`}>
@@ -158,10 +158,15 @@ export default function Stats() {
                     {g.tanggalMasuk && (
                       <p className="text-xs text-gray-400 mt-0.5">Bergabung: {new Date(g.tanggalMasuk).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</p>
                     )}
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium">
+                        {g.jenisKelamin === 'P' ? 'Ustadzah' : 'Ustadz'}
+                      </span>
+                      <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                        🎓 Bersyahadah Ummi
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium flex-shrink-0">
-                    {g.jenisKelamin === 'P' ? 'Ustadzah' : 'Ustadz'}
-                  </span>
                 </div>
               ))}
             </div>
