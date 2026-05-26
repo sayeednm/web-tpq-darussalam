@@ -73,7 +73,7 @@ export default function Stats() {
                   </div>
                   <div className={`text-4xl font-bold mb-1 ${stat.color === 'amber' ? 'text-amber-500' : 'text-emerald-600'}`}>{stat.number}</div>
                   <div className="text-gray-500 text-sm font-medium">{stat.label}</div>
-                  {stat.onClick && <p className="text-xs text-emerald-500 mt-1.5 font-medium">Lihat detail →</p>}
+                  {stat.onClick && <p className="text-xs text-emerald-500 mt-1.5 font-medium">↗</p>}
                 </div>
               </motion.div>
             ))}
