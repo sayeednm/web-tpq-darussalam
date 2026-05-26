@@ -21,7 +21,7 @@ export default function Navbar() {
     { label: 'Metode Ummi', href: '#metode-ummi' },
     { label: 'Program', href: '#program' },
     { label: 'Galeri', href: '#galeri' },
-    { label: 'Donasi', href: '#donasi' },
+    { label: 'Infaq', href: '#donasi' },
     { label: 'Kontak', href: '#kontak' },
   ]
 
@@ -30,25 +30,25 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-2 min-w-0">
-            <div className="w-9 h-9 flex-shrink-0 relative">
+            <div className="w-9 h-9 flex-shrink-0 overflow-hidden">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo TPQ Darussalam" className="w-full h-full object-contain" />
               ) : (
-                <>
-                  <img 
-                    src="/logo-tpq.png" 
-                    alt="Logo TPQ Darussalam" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
-                  <div className="hidden w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-white" />
-                  </div>
-                </>
+                <img 
+                  src="/logo-tpq.png" 
+                  alt="Logo TPQ Darussalam" 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    const el = e.currentTarget
+                    el.style.display = 'none'
+                    const fallback = el.parentElement?.querySelector('.logo-fallback') as HTMLElement
+                    if (fallback) fallback.style.display = 'flex'
+                  }}
+                />
               )}
+              <div className="logo-fallback w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg items-center justify-center" style={{ display: 'none' }}>
+                <BookOpen className="w-5 h-5 text-white" />
+              </div>
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-lg font-bold text-emerald-700 leading-tight truncate">TPQ Darussalam</span>
