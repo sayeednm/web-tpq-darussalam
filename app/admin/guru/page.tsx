@@ -6,7 +6,7 @@ import { Guru } from '@/lib/types'
 import { Plus, Pencil, Trash2, Search, X, GraduationCap } from 'lucide-react'
 
 const emptyForm: Omit<Guru, 'id'> = {
-  nama: '', tempatLahir: '', tanggalLahir: '', jenisKelamin: 'L',
+  nama: '', nik: '', tempatLahir: '', tanggalLahir: '', jenisKelamin: 'L',
   alamat: '', noHp: '', email: '', jabatan: '',
   kelasAjar: [], tanggalMasuk: '', status: 'aktif',
 }
@@ -172,17 +172,19 @@ export default function GuruPage() {
             <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { label: 'Nama Lengkap', key: 'nama', type: 'text' },
+                { label: 'NIK', key: 'nik', type: 'text', placeholder: '16 digit NIK' },
                 { label: 'Tempat Lahir', key: 'tempatLahir', type: 'text' },
                 { label: 'Tanggal Lahir', key: 'tanggalLahir', type: 'date' },
                 { label: 'No HP', key: 'noHp', type: 'text' },
                 { label: 'Email', key: 'email', type: 'email' },
                 { label: 'Jabatan', key: 'jabatan', type: 'text' },
                 { label: 'Tanggal Masuk', key: 'tanggalMasuk', type: 'date' },
-              ].map(({ label, key, type }) => (
+              ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
                   <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>
-                  <input type={type} value={(form as any)[key]}
+                  <input type={type} value={(form as any)[key] ?? ''}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                    placeholder={placeholder}
                     className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50" />
                 </div>
               ))}

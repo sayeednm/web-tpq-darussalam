@@ -7,7 +7,7 @@ import { addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
 const programOptions = [
-  'Pra Jilid (4-5 Tahun)',
+  'Pra Jilid (3-5 Tahun)',
   'Jilid 1',
   'Jilid 2',
   'Jilid 3',
@@ -17,6 +17,7 @@ const programOptions = [
   'Gharib',
   'Tajwid',
   'Al-Quran',
+  'Tahfidz',
 ]
 
 export default function Daftar() {
@@ -60,7 +61,7 @@ export default function Daftar() {
       // WhatsApp notification
       const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
 
-      const phoneNumber = '6289537901779'
+      const phoneNumber = '62895379017798'
       window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
       setSuccess(true)
     } catch (err) {
@@ -99,13 +100,13 @@ export default function Daftar() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }} className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
 
           {success ? (
-            <div className="p-10 text-center">
+            <div className="p-8 text-center">
               <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
                 <CheckCircle size={40} className="text-emerald-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
-              <p className="text-gray-500 mb-2">Data pendaftaran sudah kami terima.</p>
-              <p className="text-gray-500 mb-8">WhatsApp akan terbuka untuk konfirmasi langsung dengan admin.</p>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
+              <p className="text-gray-500 text-sm mb-2 break-words">Data pendaftaran sudah kami terima.</p>
+              <p className="text-gray-500 text-sm mb-8 break-words">WhatsApp akan terbuka untuk konfirmasi langsung dengan admin.</p>
               <button onClick={() => { setSuccess(false); setStep(1) }}
                 className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">
                 Daftar Lagi
@@ -298,11 +299,11 @@ export default function Daftar() {
                         ← Kembali
                       </button>
                       <button type="submit" disabled={loading || !formData.program}
-                        className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition disabled:opacity-60 disabled:cursor-not-allowed">
+                        className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition disabled:opacity-60 disabled:cursor-not-allowed min-w-0">
                         {loading ? (
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin flex-shrink-0" />
                         ) : (
-                          <><Send className="w-4 h-4" /> Kirim Pendaftaran</>
+                          <><Send className="w-4 h-4 flex-shrink-0" /><span className="truncate">Kirim Pendaftaran</span></>
                         )}
                       </button>
                     </div>

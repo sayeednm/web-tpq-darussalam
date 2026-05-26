@@ -13,7 +13,7 @@ const features = [
   {
     icon: Award,
     title: 'Fasilitas Lengkap',
-    description: 'Ruang kelas nyaman, ber-AC, perpustakaan mini, dan media pembelajaran interaktif yang mendukung proses belajar.',
+    description: 'Ruang kelas nyaman, perpustakaan mini, dan media pembelajaran interaktif yang mendukung proses belajar.',
     color: 'amber',
   },
   {

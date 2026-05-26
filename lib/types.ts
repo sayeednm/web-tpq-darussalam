@@ -22,6 +22,7 @@ export interface Santri {
 export interface Guru {
   id?: string
   nama: string
+  nik?: string
   tempatLahir: string
   tanggalLahir: string
   jenisKelamin: 'L' | 'P'

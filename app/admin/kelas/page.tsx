@@ -18,6 +18,7 @@ const levelUmmi = [
   'Gharib',
   'Tajwid',
   'Al-Quran',
+  'Tahfidz',
 ]
 
 export default function KelasPage() {
