@@ -58,7 +58,7 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div>
+    <div className="overflow-hidden">
       <div className="mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1 flex items-center gap-1">
@@ -74,16 +74,16 @@ export default function DashboardPage() {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {cards.map(({ label, value, icon: Icon, bg, text, desc }) => (
-            <div key={label} className="bg-white rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+            <div key={label} className="bg-white rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
               <div className="flex items-start justify-between mb-3">
-                <div className={`${bg} p-2.5 rounded-xl`}>
+                <div className={`${bg} p-2.5 rounded-xl flex-shrink-0`}>
                   <Icon size={20} className={text} />
                 </div>
-                <TrendingUp size={14} className="text-gray-300" />
+                <TrendingUp size={14} className="text-gray-300 flex-shrink-0" />
               </div>
-              <p className="text-2xl lg:text-3xl font-bold text-gray-800">{value}</p>
-              <p className="text-sm font-medium text-gray-700 mt-0.5">{label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
+              <p className="text-2xl lg:text-3xl font-bold text-gray-800 truncate">{value}</p>
+              <p className="text-sm font-medium text-gray-700 mt-0.5 truncate">{label}</p>
+              <p className="text-xs text-gray-400 mt-0.5 truncate">{desc}</p>
             </div>
           ))}
         </div>
