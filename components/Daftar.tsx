@@ -60,7 +60,7 @@ export default function Daftar() {
       // WhatsApp notification
       const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
 
-      const phoneNumber = '6289528036024'
+      const phoneNumber = '6289537901779'
       window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
       setSuccess(true)
     } catch (err) {
