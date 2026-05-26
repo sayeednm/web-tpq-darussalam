@@ -1,10 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Menu, X, BookOpen } from 'lucide-react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'logo'))
+      .then(snap => { if (snap.exists()) setLogoUrl(snap.data().url) })
+      .catch(() => {})
+  }, [])
 
   const menuItems = [
     { label: 'Beranda', href: '#beranda' },
@@ -21,18 +30,24 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-2 min-w-0">
             <div className="w-9 h-9 flex-shrink-0 relative">
-              <img 
-                src="/logo-tpq.png" 
-                alt="Logo TPQ Darussalam" 
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                }}
-              />
-              <div className="hidden w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-white" />
-              </div>
+              {logoUrl ? (
+                <img src={logoUrl} alt="Logo TPQ Darussalam" className="w-full h-full object-contain" />
+              ) : (
+                <>
+                  <img 
+                    src="/logo-tpq.png" 
+                    alt="Logo TPQ Darussalam" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="hidden w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-white" />
+                  </div>
+                </>
+              )}
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-lg font-bold text-emerald-700 leading-tight truncate">TPQ Darussalam</span>

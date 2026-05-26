@@ -45,8 +45,8 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+      <div className="mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1 flex items-center gap-1">
           <Calendar size={14} />
           {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
@@ -76,14 +76,14 @@ export default function DashboardPage() {
       )}
 
       <div className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-5 text-white shadow-lg">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <p className="text-emerald-100 text-sm">Total SPP Terkumpul Bulan Ini</p>
-            <p className="text-2xl lg:text-3xl font-bold mt-1">Rp {stats.totalSPP.toLocaleString('id-ID')}</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold mt-1 truncate">Rp {stats.totalSPP.toLocaleString('id-ID')}</p>
             <p className="text-emerald-200 text-xs mt-1">{bulanIni}</p>
           </div>
-          <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
-            <Wallet size={28} className="text-white" />
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <Wallet size={24} className="text-white" />
           </div>
         </div>
       </div>

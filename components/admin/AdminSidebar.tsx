@@ -17,6 +17,7 @@ import {
   X,
   BookMarked,
   ClipboardCheck,
+  Images,
 } from 'lucide-react'
 
 const menus = [
@@ -28,6 +29,7 @@ const menus = [
   { href: '/admin/absensi', label: 'Absensi', icon: ClipboardList },
   { href: '/admin/penilaian', label: 'Penilaian', icon: Star },
   { href: '/admin/pembayaran', label: 'SPP / Keuangan', icon: Wallet },
+  { href: '/admin/media', label: 'Media & Logo', icon: Images },
 ]
 
 export default function AdminSidebar() {

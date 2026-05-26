@@ -97,7 +97,7 @@ export default function AbsensiPage() {
         <>
           {/* Summary */}
           {santriList.length > 0 && (
-            <div className="grid grid-cols-4 gap-2 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
               {(['hadir', 'izin', 'sakit', 'alpha'] as const).map(st => (
                 <div key={st} className={`rounded-xl p-3 text-center ${statusColor[st].split(' ').slice(0, 2).join(' ')}`}>
                   <p className="text-xl font-bold">{summary[st] || 0}</p>
@@ -153,16 +153,16 @@ export default function AbsensiPage() {
                   {santriList.map((s, i) => (
                     <div key={s.id} className="p-4">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-400 w-5">{i + 1}</span>
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-600">
+                        <span className="text-xs text-gray-400 w-5 flex-shrink-0">{i + 1}</span>
+                        <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-600 flex-shrink-0">
                           {s.nama.charAt(0)}
                         </div>
-                        <p className="font-medium text-gray-800 text-sm">{s.nama}</p>
+                        <p className="font-medium text-gray-800 text-sm truncate">{s.nama}</p>
                       </div>
-                      <div className="grid grid-cols-4 gap-1.5 ml-8">
+                      <div className="grid grid-cols-2 gap-2">
                         {statusOptions.map(st => (
                           <button key={st} onClick={() => setStatus(s.id!, st)}
-                            className={`py-2 rounded-xl text-xs font-medium border transition ${absensiMap[s.id!]?.status === st ? statusColor[st] : 'border-gray-200 text-gray-400'}`}>
+                            className={`py-2.5 rounded-xl text-xs font-semibold border transition ${absensiMap[s.id!]?.status === st ? statusColor[st] : 'border-gray-200 text-gray-400 bg-gray-50'}`}>
                             {st.charAt(0).toUpperCase() + st.slice(1)}
                           </button>
                         ))}
@@ -171,9 +171,9 @@ export default function AbsensiPage() {
                   ))}
                 </div>
 
-                <div className="p-4 border-t flex justify-end">
+                <div className="p-4 border-t">
                   <button onClick={handleSave} disabled={saving}
-                    className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 shadow-lg shadow-emerald-200">
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-5 py-3 rounded-xl text-sm font-medium disabled:opacity-50 shadow-lg shadow-emerald-200">
                     <Save size={16} /> {saving ? 'Menyimpan...' : 'Simpan Absensi'}
                   </button>
                 </div>
