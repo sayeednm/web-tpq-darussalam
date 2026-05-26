@@ -30,6 +30,7 @@ export interface Guru {
   noHp: string
   email: string
   jabatan: string
+  bio?: string
   kelasAjar: string[]
   tanggalMasuk: string
   status: 'aktif' | 'nonaktif'
