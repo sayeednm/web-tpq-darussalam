@@ -32,11 +32,11 @@ function AdminContent({ children }: { children: React.ReactNode }) {
   if (pathname === '/admin/login') return <>{children}</>
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 overflow-x-hidden w-full">
       <AdminSidebar />
-      <main className="flex-1 lg:ml-64 min-h-screen">
+      <main className="flex-1 lg:ml-64 min-h-screen min-w-0 overflow-x-hidden">
         <div className="h-16 lg:h-0" />
-        <div className="p-5 lg:p-8">
+        <div className="p-4 lg:p-8 max-w-full">
           {children}
         </div>
       </main>
