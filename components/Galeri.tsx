@@ -59,7 +59,6 @@ export default function Galeri() {
           <div className="py-16 text-center">
             <ImageIcon size={48} className="text-slate-600 mx-auto mb-3" />
             <p className="text-slate-400 font-medium">Belum ada foto galeri</p>
-            <p className="text-slate-500 text-sm mt-1">Admin dapat menambahkan foto melalui panel admin</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
