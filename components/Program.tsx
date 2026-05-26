@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Baby, BookOpen, GraduationCap, Clock, Star } from 'lucide-react'
+import { Baby, BookOpen, GraduationCap, Clock, Star, Trophy } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -35,6 +35,13 @@ const programs = [
     description: 'Program menghafal Al-Qur\'an dengan metode yang sistematis, menyenangkan, dan didampingi oleh pengajar bersertifikat.',
     features: ['Hafalan juz per juz', 'Muroja\'ah rutin', 'Target hafalan terstruktur'],
   },
+  {
+    icon: Trophy,
+    title: 'Munaqosah',
+    age: 'Program Unggulan',
+    description: 'Ujian kenaikan jilid resmi Metode Ummi sebagai tolak ukur kemampuan santri sebelum naik ke tingkat berikutnya.',
+    features: ['Ujian resmi Metode Ummi', 'Sertifikat kelulusan jilid', 'Evaluasi menyeluruh'],
+  },
 ]
 
 export default function Program() {
@@ -66,7 +73,7 @@ export default function Program() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {programs.map((program, index) => (
             <motion.div
               key={program.title}
