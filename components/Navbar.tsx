@@ -51,7 +51,7 @@ export default function Navbar() {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-lg font-bold text-emerald-700 leading-tight truncate">TPQ Darussalam</span>
-              <span className="text-xs text-gray-500 leading-tight hidden sm:block truncate">Jl.Kemantren RT 06 RW 01, Tulangan</span>
+              <span className="text-xs text-gray-500 leading-tight truncate">Jl.Kemantren RT 06 RW 01, Tulangan</span>
             </div>
           </div>
 
