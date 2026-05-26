@@ -2,6 +2,9 @@
 
 import { motion } from 'framer-motion'
 import { Baby, BookOpen, GraduationCap, Clock } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 const programs = [
   {
@@ -28,6 +31,13 @@ const programs = [
 ]
 
 export default function Program() {
+  const [jadwal, setJadwal] = useState('Senin - Jumat: 15.30 - 17.30 WIB | Sabtu: 08.00 - 10.00 WIB')
+
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'jadwal'))
+      .then(snap => { if (snap.exists() && snap.data().teks) setJadwal(snap.data().teks) })
+      .catch(() => {})
+  }, [])
   return (
     <section id="program" className="relative py-20 overflow-hidden bg-white">
       <div className="absolute top-0 right-0 w-80 h-80 bg-amber-50 rounded-full opacity-80 blur-3xl translate-x-1/3 -translate-y-1/3"></div>
@@ -105,7 +115,7 @@ export default function Program() {
           <div>
             <h4 className="font-bold text-gray-900 mb-2 text-lg">Jadwal Pembelajaran</h4>
             <p className="text-gray-700 font-medium">
-              Senin - Jumat: 15.30 - 17.30 WIB | Sabtu: 08.00 - 10.00 WIB
+              {jadwal}
             </p>
           </div>
         </motion.div>

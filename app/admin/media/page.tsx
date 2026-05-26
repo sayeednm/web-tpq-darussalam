@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc, orderBy, query } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { Upload, Trash2, Image as ImageIcon, CheckCircle, ImagePlus, AlertCircle } from 'lucide-react'
+import { Upload, Trash2, Image as ImageIcon, CheckCircle, ImagePlus, AlertCircle, Clock, Save } from 'lucide-react'
 
 interface FotoGaleri {
   id: string
@@ -39,6 +39,8 @@ export default function MediaPage() {
   const [doneCount, setDoneCount] = useState(0)
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [jadwal, setJadwal] = useState('Senin - Jumat: 15.30 - 17.30 WIB | Sabtu: 08.00 - 10.00 WIB')
+  const [savingJadwal, setSavingJadwal] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -71,7 +73,14 @@ export default function MediaPage() {
     } catch {}
   }
 
-  useEffect(() => { loadFotos(); loadLogo() }, [])
+  const loadJadwal = async () => {
+    try {
+      const snap = await getDoc(doc(db, 'settings', 'jadwal'))
+      if (snap.exists() && snap.data().teks) setJadwal(snap.data().teks)
+    } catch {}
+  }
+
+  useEffect(() => { loadFotos(); loadLogo(); loadJadwal() }, [])
 
   // Upload foto galeri (bisa multiple)
   const handleFotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +120,17 @@ export default function MediaPage() {
     await deleteDoc(doc(db, 'galeri', foto.id))
     setFotos(prev => prev.filter(f => f.id !== foto.id))
     showSuccess('Foto dihapus.')
+  }
+
+  const handleSaveJadwal = async () => {
+    setSavingJadwal(true)
+    try {
+      await setDoc(doc(db, 'settings', 'jadwal'), { teks: jadwal, updatedAt: new Date().toISOString() })
+      showSuccess('Jadwal berhasil disimpan!')
+    } catch {
+      showError('Gagal menyimpan jadwal.')
+    }
+    setSavingJadwal(false)
   }
 
   // Upload logo
@@ -209,6 +229,29 @@ export default function MediaPage() {
               {uploadingLogo ? 'Mengupload...' : logoUrl ? 'Ganti Logo' : 'Upload Logo'}
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* ── JADWAL SECTION ── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <h2 className="text-base font-semibold text-gray-800 mb-1">Jadwal Pembelajaran</h2>
+        <p className="text-xs text-gray-500 mb-4">Tampil di section Program landing page</p>
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={jadwal}
+              onChange={e => setJadwal(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+              placeholder="Contoh: Senin - Jumat: 15.30 - 17.30 WIB | Sabtu: 08.00 - 10.00 WIB"
+            />
+          </div>
+          <button onClick={handleSaveJadwal} disabled={savingJadwal}
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition disabled:opacity-50 flex-shrink-0">
+            <Save size={15} />
+            {savingJadwal ? 'Menyimpan...' : 'Simpan'}
+          </button>
         </div>
       </div>
 
