@@ -293,18 +293,18 @@ export default function Daftar() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-3">
-                      <button type="button" onClick={() => setStep(2)}
-                        className="flex-1 border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition">
-                        ← Kembali
-                      </button>
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <button type="submit" disabled={loading || !formData.program}
-                        className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition disabled:opacity-60 disabled:cursor-not-allowed min-w-0">
+                        className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition disabled:opacity-60 disabled:cursor-not-allowed">
                         {loading ? (
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
-                          <><Send className="w-4 h-4 flex-shrink-0" /><span className="truncate">Kirim Pendaftaran</span></>
+                          <><Send className="w-4 h-4" /> Kirim Pendaftaran</>
                         )}
+                      </button>
+                      <button type="button" onClick={() => setStep(2)}
+                        className="w-full sm:w-auto border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition text-sm">
+                        ← Kembali
                       </button>
                     </div>
                   </>
