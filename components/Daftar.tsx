@@ -42,7 +42,9 @@ export default function Daftar() {
   })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [step, setStep] = useState(1) // multi-step form
+  const [step, setStep] = useState(1)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [waUrl, setWaUrl] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(f => ({ ...f, [e.target.name]: e.target.value }))
@@ -51,6 +53,7 @@ export default function Daftar() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setErrorMsg('')
     try {
       await addDoc(collection(db, 'pendaftaran'), {
         ...formData,
@@ -62,10 +65,18 @@ export default function Daftar() {
       const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
 
       const phoneNumber = '62895379017798'
-      window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
+      const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+
+      // Coba buka WA — kalau diblokir popup blocker, tetap tampilkan sukses dengan link manual
+      const waWindow = window.open(waUrl, '_blank')
+      if (!waWindow) {
+        // Popup diblokir — simpan URL untuk ditampilkan manual
+        setWaUrl(waUrl)
+      }
       setSuccess(true)
     } catch (err) {
       console.error(err)
+      setErrorMsg('Gagal mengirim pendaftaran. Periksa koneksi internet dan coba lagi.')
     } finally {
       setLoading(false)
     }
@@ -105,9 +116,20 @@ export default function Daftar() {
                 <CheckCircle size={40} className="text-emerald-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
-              <p className="text-gray-500 text-sm mb-2 break-words">Data pendaftaran sudah kami terima.</p>
-              <p className="text-gray-500 text-sm mb-8 break-words">WhatsApp akan terbuka untuk konfirmasi langsung dengan admin.</p>
-              <button onClick={() => { setSuccess(false); setStep(1) }}
+              <p className="text-gray-500 text-sm mb-4 break-words">Data pendaftaran sudah kami terima.</p>
+              {waUrl ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5 text-left">
+                  <p className="text-amber-800 text-sm font-medium mb-1">WhatsApp tidak terbuka otomatis.</p>
+                  <p className="text-amber-700 text-xs mb-3">Klik tombol di bawah untuk konfirmasi ke admin:</p>
+                  <a href={waUrl} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-xl text-sm font-bold">
+                    Buka WhatsApp Konfirmasi
+                  </a>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm mb-6 break-words">WhatsApp terbuka untuk konfirmasi dengan admin.</p>
+              )}
+              <button onClick={() => { setSuccess(false); setStep(1); setWaUrl('') }}
                 className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">
                 Daftar Lagi
               </button>
@@ -307,6 +329,11 @@ export default function Daftar() {
                         ← Kembali
                       </button>
                     </div>
+                    {errorMsg && (
+                      <div className="mt-3 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                        {errorMsg}
+                      </div>
+                    )}
                   </>
                 )}
               </div>

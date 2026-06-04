@@ -166,13 +166,13 @@ export default function Stats() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {santriList.map((s, i) => (
                       <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                        className="bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-2xl p-4 text-center hover:shadow-md transition-shadow">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-bold mx-auto mb-2 shadow-sm ${s.jenisKelamin === 'P' ? 'bg-gradient-to-br from-pink-400 to-rose-500 text-white' : 'bg-gradient-to-br from-blue-400 to-indigo-500 text-white'}`}>
+                        className="bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-2xl p-3 text-center hover:shadow-md transition-shadow">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-base font-bold mx-auto mb-2 shadow-sm ${s.jenisKelamin === 'P' ? 'bg-gradient-to-br from-pink-400 to-rose-500 text-white' : 'bg-gradient-to-br from-blue-400 to-indigo-500 text-white'}`}>
                           {s.nama.charAt(0).toUpperCase()}
                         </div>
-                        <p className="font-semibold text-gray-800 text-sm truncate">{s.nama}</p>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium mt-1 inline-block ${s.jenisKelamin === 'P' ? 'bg-pink-100 text-pink-600' : 'bg-blue-100 text-blue-600'}`}>
-                          {s.jenisKelamin === 'P' ? 'Perempuan' : 'Laki-laki'}
+                        <p className="font-semibold text-gray-800 text-xs leading-tight break-words">{s.nama}</p>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium mt-1.5 inline-block ${s.jenisKelamin === 'P' ? 'bg-pink-100 text-pink-600' : 'bg-blue-100 text-blue-600'}`}>
+                          {s.jenisKelamin === 'P' ? 'P' : 'L'}
                         </span>
                       </motion.div>
                     ))}
