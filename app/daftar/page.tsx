@@ -21,6 +21,8 @@ export default function DaftarPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [step, setStep] = useState(1)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [waUrl, setWaUrl] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(f => ({ ...f, [e.target.name]: e.target.value }))
@@ -29,15 +31,19 @@ export default function DaftarPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setErrorMsg('')
     try {
       await addDoc(collection(db, 'pendaftaran'), {
         ...formData, status: 'baru', createdAt: new Date().toISOString(),
       })
       const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
-      window.open(`https://wa.me/62895379017798?text=${encodeURIComponent(message)}`, '_blank')
+      const url = `https://wa.me/62895379017798?text=${encodeURIComponent(message)}`
+      const opened = window.open(url, '_blank')
+      if (!opened) setWaUrl(url)
       setSuccess(true)
     } catch (err) {
       console.error(err)
+      setErrorMsg('Gagal mengirim pendaftaran. Periksa koneksi internet dan coba lagi.')
     } finally {
       setLoading(false)
     }
@@ -59,15 +65,29 @@ export default function DaftarPage() {
       <div className="max-w-lg mx-auto px-4 py-8">
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
           {success ? (
-            <div className="p-10 text-center">
+            <div className="p-8 text-center">
               <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
                 <CheckCircle size={40} className="text-emerald-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Pendaftaran Terkirim!</h3>
-              <p className="text-gray-500 text-sm mb-2">Data pendaftaran sudah kami terima.</p>
-              <p className="text-gray-500 text-sm mb-8">WhatsApp akan terbuka untuk konfirmasi langsung dengan admin.</p>
-              <button onClick={() => { setSuccess(false); setStep(1) }}
+              <p className="text-gray-500 text-sm mb-4">Data pendaftaran sudah kami terima.</p>
+              {waUrl ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5 text-left">
+                  <p className="text-amber-800 text-sm font-medium mb-1">WhatsApp tidak terbuka otomatis.</p>
+                  <p className="text-amber-700 text-xs mb-3">Klik tombol di bawah untuk konfirmasi ke admin:</p>
+                  <a href={waUrl} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-xl text-sm font-bold">
+                    Buka WhatsApp Konfirmasi
+                  </a>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm mb-6">WhatsApp terbuka untuk konfirmasi dengan admin.</p>
+              )}
+              <button onClick={() => { setSuccess(false); setStep(1); setWaUrl('') }}
                 className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition text-sm">
+                Daftar Lagi
+              </button>
+            </div>
                 Daftar Lagi
               </button>
             </div>
@@ -238,17 +258,22 @@ export default function DaftarPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-3">
-                      <button type="button" onClick={() => setStep(2)}
-                        className="flex-1 border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition text-sm">← Kembali</button>
+                    <div className="flex flex-col gap-3">
                       <button type="submit" disabled={loading || !formData.program}
-                        className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition disabled:opacity-60 min-w-0 text-sm">
+                        className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition disabled:opacity-60 text-sm">
                         {loading ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
-                          <><Send className="w-4 h-4 flex-shrink-0" /><span className="truncate">Kirim Pendaftaran</span></>
+                          <><Send className="w-4 h-4" /> Kirim Pendaftaran</>
                         )}
                       </button>
+                      <button type="button" onClick={() => setStep(2)}
+                        className="w-full border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition text-sm">← Kembali</button>
+                      {errorMsg && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                          {errorMsg}
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
