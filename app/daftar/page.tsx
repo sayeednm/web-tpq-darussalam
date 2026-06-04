@@ -88,9 +88,6 @@ export default function DaftarPage() {
                 Daftar Lagi
               </button>
             </div>
-                Daftar Lagi
-              </button>
-            </div>
           ) : (
             <form onSubmit={handleSubmit}>
               {/* Step indicator */}
