@@ -298,12 +298,26 @@ export default function Daftar() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Program yang Diminati</label>
                         <div className="space-y-2">
                           {programOptions.map(opt => (
-                            <label key={opt} className={`flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer transition ${formData.program === opt ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                              <input type="radio" name="program" value={opt} checked={formData.program === opt} onChange={handleChange} className="text-emerald-600" required />
-                              <span className="text-sm font-medium text-gray-700">{opt}</span>
-                            </label>
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setFormData(f => ({ ...f, program: opt }))}
+                              className={`w-full flex items-center gap-3 p-3.5 rounded-xl border-2 transition-all text-left ${
+                                formData.program === opt
+                                  ? 'border-emerald-500 bg-emerald-500 text-white font-semibold shadow-md'
+                                  : 'border-gray-200 bg-white text-gray-700 hover:border-emerald-300'
+                              }`}
+                            >
+                              <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                                formData.program === opt ? 'border-white bg-white' : 'border-gray-400'
+                              }`}>
+                                {formData.program === opt && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                              </div>
+                              <span className="text-sm">{opt}</span>
+                            </button>
                           ))}
                         </div>
+                        <input type="hidden" name="program" value={formData.program} required />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Pesan / Pertanyaan <span className="text-gray-400 font-normal">(opsional)</span></label>
