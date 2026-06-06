@@ -33,8 +33,10 @@ export default function Daftar() {
     noKK: '',
     namaAyah: '',
     nikAyah: '',
+    ttlAyah: '',
     namaIbu: '',
     nikIbu: '',
+    ttlIbu: '',
     noHpOrtu: '',
     // Program
     program: '',
@@ -62,7 +64,7 @@ export default function Daftar() {
       })
 
       // WhatsApp notification
-      const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
+      const message = `*PENDAFTARAN SANTRI BARU*\n*TPQ Darussalam*\n\n*Nama:* ${formData.nama}\n*NIK Santri:* ${formData.nik || '-'}\n*TTL:* ${formData.tempatLahir}, ${formData.tanggalLahir}\n*Jenis Kelamin:* ${formData.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}\n*Alamat:* ${formData.alamat}\n\n*No. KK:* ${formData.noKK || '-'}\n*Nama Ayah:* ${formData.namaAyah} (NIK: ${formData.nikAyah || '-'})\n*TTL Ayah:* ${formData.ttlAyah || '-'}\n*Nama Ibu:* ${formData.namaIbu} (NIK: ${formData.nikIbu || '-'})\n*TTL Ibu:* ${formData.ttlIbu || '-'}\n*No HP:* ${formData.noHpOrtu}\n\n*Program:* ${formData.program}\n${formData.pesan ? `*Pesan:* ${formData.pesan}` : ''}\n\n_Terima kasih telah mendaftar di TPQ Darussalam!_`
 
       const phoneNumber = '62895379017798'
       const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
@@ -249,6 +251,12 @@ export default function Daftar() {
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm font-mono tracking-wider"
                             placeholder="16 digit NIK Ayah" />
                         </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">TTL Ayah <span className="text-gray-400 font-normal">(Tempat, Tanggal Lahir)</span></label>
+                          <input type="text" name="ttlAyah" value={formData.ttlAyah} onChange={handleChange}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="Contoh: Sidoarjo, 01-01-1980" />
+                        </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ibu</label>
                           <div className="relative">
@@ -264,6 +272,12 @@ export default function Daftar() {
                             inputMode="numeric" maxLength={16}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm font-mono tracking-wider"
                             placeholder="16 digit NIK Ibu" />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">TTL Ibu <span className="text-gray-400 font-normal">(Tempat, Tanggal Lahir)</span></label>
+                          <input type="text" name="ttlIbu" value={formData.ttlIbu} onChange={handleChange}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                            placeholder="Contoh: Surabaya, 05-06-1983" />
                         </div>
                       </div>
 
