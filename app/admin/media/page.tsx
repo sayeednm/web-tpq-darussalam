@@ -1,15 +1,16 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc, orderBy, query } from 'firebase/firestore'
+import { collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc, orderBy, query, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { Upload, Trash2, Image as ImageIcon, CheckCircle, ImagePlus, AlertCircle, Clock, Save } from 'lucide-react'
+import { Upload, Trash2, Image as ImageIcon, CheckCircle, ImagePlus, AlertCircle, Clock, Save, Pencil } from 'lucide-react'
 
 interface FotoGaleri {
   id: string
   url: string
   publicId: string
   nama: string
+  deskripsi: string
   createdAt: string
 }
 
@@ -43,6 +44,16 @@ export default function MediaPage() {
   const [savingJadwal, setSavingJadwal] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+
+  // State form upload foto
+  const [showUploadForm, setShowUploadForm] = useState(false)
+  const [selectedFiles, setSelectedFiles] = useState<{ file: File; nama: string; deskripsi: string; previewUrl: string }[]>([])
+
+  // State modal edit foto
+  const [editFoto, setEditFoto] = useState<FotoGaleri | null>(null)
+  const [editNama, setEditNama] = useState('')
+  const [editDeskripsi, setEditDeskripsi] = useState('')
+  const [savingEdit, setSavingEdit] = useState(false)
 
   const fotoInputRef = useRef<HTMLInputElement>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
@@ -82,11 +93,23 @@ export default function MediaPage() {
 
   useEffect(() => { loadFotos(); loadLogo(); loadJadwal() }, [])
 
-  // Upload foto galeri (bisa multiple)
-  const handleFotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Pilih file → tampilkan form isi nama & deskripsi
+  const handleFotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (!files.length) return
     e.target.value = ''
+    setSelectedFiles(files.map(f => ({
+      file: f,
+      nama: f.name.replace(/\.[^/.]+$/, ''), // hapus ekstensi
+      deskripsi: '',
+      previewUrl: URL.createObjectURL(f),
+    })))
+    setShowUploadForm(true)
+  }
+
+  // Upload semua file dengan nama & deskripsi yang sudah diisi
+  const handleFotoUpload = async () => {
+    if (!selectedFiles.length) return
 
     if (!CLOUD_NAME || !UPLOAD_PRESET || CLOUD_NAME === 'isi_cloud_name_kamu') {
       showError('Cloudinary belum dikonfigurasi. Isi CLOUD_NAME dan UPLOAD_PRESET di .env.local')
@@ -94,24 +117,31 @@ export default function MediaPage() {
     }
 
     setUploading(true)
-    setUploadingCount(files.length)
+    setUploadingCount(selectedFiles.length)
     setDoneCount(0)
+    setShowUploadForm(false)
 
-    for (const file of files) {
+    for (const item of selectedFiles) {
       try {
-        const { url, publicId } = await uploadToCloudinary(file, 'tpq-galeri')
+        const { url, publicId } = await uploadToCloudinary(item.file, 'tpq-galeri')
         await addDoc(collection(db, 'galeri'), {
-          url, publicId, nama: file.name,
+          url, publicId,
+          nama: item.nama || item.file.name,
+          deskripsi: item.deskripsi || '',
           createdAt: new Date().toISOString(),
         })
         setDoneCount(prev => prev + 1)
       } catch {
-        showError(`Gagal upload: ${file.name}`)
+        showError(`Gagal upload: ${item.file.name}`)
       }
     }
 
     setUploading(false)
-    showSuccess(`${files.length} foto berhasil diupload!`)
+    setSelectedFiles(prev => {
+      prev.forEach(f => URL.revokeObjectURL(f.previewUrl))
+      return []
+    })
+    showSuccess(`${selectedFiles.length} foto berhasil diupload!`)
     loadFotos()
   }
 
@@ -120,6 +150,29 @@ export default function MediaPage() {
     await deleteDoc(doc(db, 'galeri', foto.id))
     setFotos(prev => prev.filter(f => f.id !== foto.id))
     showSuccess('Foto dihapus.')
+  }
+
+  const handleOpenEdit = (foto: FotoGaleri) => {
+    setEditFoto(foto)
+    setEditNama(foto.nama || '')
+    setEditDeskripsi(foto.deskripsi || '')
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editFoto) return
+    setSavingEdit(true)
+    try {
+      await updateDoc(doc(db, 'galeri', editFoto.id), {
+        nama: editNama,
+        deskripsi: editDeskripsi,
+      })
+      setFotos(prev => prev.map(f => f.id === editFoto.id ? { ...f, nama: editNama, deskripsi: editDeskripsi } : f))
+      showSuccess('Foto berhasil diperbarui!')
+      setEditFoto(null)
+    } catch {
+      showError('Gagal menyimpan perubahan.')
+    }
+    setSavingEdit(false)
   }
 
   const handleSaveJadwal = async () => {
@@ -269,7 +322,7 @@ export default function MediaPage() {
                 {doneCount}/{uploadingCount}
               </span>
             )}
-            <input ref={fotoInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFotoUpload} />
+            <input ref={fotoInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFotoSelect} />
             <button onClick={() => fotoInputRef.current?.click()} disabled={uploading || !configured}
               className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg shadow-emerald-200 disabled:opacity-50 transition">
               <ImagePlus size={15} />
@@ -293,7 +346,11 @@ export default function MediaPage() {
             {fotos.map(foto => (
               <div key={foto.id} className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100">
                 <img src={foto.url} alt={foto.nama} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2">
+                  <button onClick={() => handleOpenEdit(foto)}
+                    className="opacity-0 group-hover:opacity-100 transition-all bg-white/90 hover:bg-white text-gray-800 p-2 rounded-xl shadow-lg">
+                    <Pencil size={16} />
+                  </button>
                   <button onClick={() => handleDeleteFoto(foto)}
                     className="opacity-0 group-hover:opacity-100 transition-all bg-red-500 hover:bg-red-600 text-white p-2 rounded-xl shadow-lg">
                     <Trash2 size={16} />
@@ -301,12 +358,136 @@ export default function MediaPage() {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-all">
                   <p className="text-white text-xs truncate">{foto.nama}</p>
+                  {foto.deskripsi && <p className="text-white/70 text-xs truncate">{foto.deskripsi}</p>}
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* ── MODAL FORM UPLOAD ── */}
+      {showUploadForm && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-800">Detail Foto</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Isi nama dan deskripsi untuk setiap foto</p>
+            </div>
+            <div className="p-6 space-y-6">
+              {selectedFiles.map((item, idx) => (
+                <div key={idx} className="border border-gray-100 rounded-2xl p-4 space-y-3">
+                  {/* Preview */}
+                  <div className="w-full h-40 rounded-xl overflow-hidden bg-gray-100">
+                    <img
+                      src={item.previewUrl}
+                      alt={item.nama}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Nama */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Nama Foto</label>
+                    <input
+                      type="text"
+                      value={item.nama}
+                      onChange={e => setSelectedFiles(prev => prev.map((f, i) => i === idx ? { ...f, nama: e.target.value } : f))}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                      placeholder="Nama foto..."                    />
+                  </div>
+                  {/* Deskripsi */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Deskripsi / Caption</label>
+                    <textarea
+                      value={item.deskripsi}
+                      onChange={e => setSelectedFiles(prev => prev.map((f, i) => i === idx ? { ...f, deskripsi: e.target.value } : f))}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 resize-none"
+                      placeholder="Deskripsi kegiatan pada foto ini... (opsional)"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="p-6 border-t border-gray-100 flex gap-3">
+              <button
+                onClick={() => {
+                  setShowUploadForm(false)
+                  setSelectedFiles(prev => {
+                    prev.forEach(f => URL.revokeObjectURL(f.previewUrl))
+                    return []
+                  })
+                }}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleFotoUpload}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-bold shadow-lg shadow-emerald-200 hover:from-emerald-700 hover:to-teal-700 transition flex items-center justify-center gap-2"
+              >
+                <Upload size={15} />
+                Upload {selectedFiles.length} Foto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ── MODAL EDIT FOTO ── */}
+      {editFoto && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-800">Edit Foto</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Ubah nama dan deskripsi foto</p>
+            </div>
+            <div className="p-6 space-y-4">
+              {/* Preview */}
+              <div className="w-full h-40 rounded-xl overflow-hidden bg-gray-100">
+                <img src={editFoto.url} alt={editFoto.nama} className="w-full h-full object-cover" />
+              </div>
+              {/* Nama */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Nama Foto</label>
+                <input
+                  type="text"
+                  value={editNama}
+                  onChange={e => setEditNama(e.target.value)}
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50"
+                  placeholder="Nama foto..."
+                />
+              </div>
+              {/* Deskripsi */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Deskripsi / Caption</label>
+                <textarea
+                  value={editDeskripsi}
+                  onChange={e => setEditDeskripsi(e.target.value)}
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 resize-none"
+                  placeholder="Deskripsi kegiatan pada foto ini... (opsional)"
+                  rows={3}
+                />
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-100 flex gap-3">
+              <button
+                onClick={() => setEditFoto(null)}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={savingEdit}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-bold shadow-lg shadow-emerald-200 hover:from-emerald-700 hover:to-teal-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Save size={15} />
+                {savingEdit ? 'Menyimpan...' : 'Simpan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

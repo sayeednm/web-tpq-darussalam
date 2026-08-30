@@ -10,6 +10,7 @@ interface FotoGaleri {
   id: string
   url: string
   nama: string
+  deskripsi: string
   createdAt: string
 }
 
@@ -132,16 +133,26 @@ export default function Galeri() {
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setSelected(null)}
         >
-          <button className="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition">
+          <button
+            className="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition"
+            onClick={() => setSelected(null)}
+          >
             <Camera size={20} />
           </button>
-          <img
-            src={selected.url}
-            alt={selected.nama}
-            className="max-w-full max-h-[90vh] rounded-2xl shadow-2xl object-contain"
-            onClick={e => e.stopPropagation()}
-          />
-          <p className="absolute bottom-6 text-white/70 text-sm">{selected.nama}</p>
+          <div className="flex flex-col items-center max-w-3xl w-full" onClick={e => e.stopPropagation()}>
+            <img
+              src={selected.url}
+              alt={selected.nama}
+              className="max-w-full max-h-[75vh] rounded-2xl shadow-2xl object-contain"
+            />
+            {/* Nama & Deskripsi */}
+            <div className="mt-4 text-center px-4">
+              <p className="text-white font-semibold text-base">{selected.nama}</p>
+              {selected.deskripsi && (
+                <p className="text-white/70 text-sm mt-1 max-w-xl">{selected.deskripsi}</p>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
