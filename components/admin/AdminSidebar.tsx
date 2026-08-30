@@ -15,7 +15,6 @@ import {
   LogOut,
   Menu,
   X,
-  BookMarked,
   ClipboardCheck,
   Images,
 } from 'lucide-react'
@@ -48,8 +47,8 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-emerald-700/50">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-            <BookMarked size={20} className="text-white" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-white/20 p-0.5">
+            <img src="/logo-tpq.png" alt="Logo TPQ" className="w-full h-full object-contain" />
           </div>
           <div>
             <h1 className="font-bold text-white text-sm leading-tight">TPQ Darussalam</h1>
@@ -103,8 +102,8 @@ export default function AdminSidebar() {
       {/* Mobile Top Bar */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-emerald-800 to-emerald-700 px-4 py-3 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-            <BookMarked size={16} className="text-white" />
+          <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 bg-white/20 p-0.5">
+            <img src="/logo-tpq.png" alt="Logo TPQ" className="w-full h-full object-contain" />
           </div>
           <span className="font-bold text-white text-sm">TPQ Darussalam</span>
         </div>

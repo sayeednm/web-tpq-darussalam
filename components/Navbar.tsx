@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Menu, X, BookOpen } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
@@ -34,21 +34,12 @@ export default function Navbar() {
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo TPQ Darussalam" className="w-full h-full object-contain" />
               ) : (
-                <img 
-                  src="/logo-tpq.png" 
-                  alt="Logo TPQ Darussalam" 
+                <img
+                  src="/logo-tpq.png"
+                  alt="Logo TPQ Darussalam"
                   className="w-full h-full object-contain"
-                  onError={(e) => {
-                    const el = e.currentTarget
-                    el.style.display = 'none'
-                    const fallback = el.parentElement?.querySelector('.logo-fallback') as HTMLElement
-                    if (fallback) fallback.style.display = 'flex'
-                  }}
                 />
               )}
-              <div className="logo-fallback w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg items-center justify-center" style={{ display: 'none' }}>
-                <BookOpen className="w-5 h-5 text-white" />
-              </div>
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-lg font-bold text-emerald-700 leading-tight truncate">TPQ Darussalam</span>

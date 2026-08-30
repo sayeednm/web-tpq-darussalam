@@ -1,6 +1,6 @@
 'use client'
 
-import { Send, User, Phone, MessageSquare, CheckCircle, MapPin, Calendar, Users, BookOpen } from 'lucide-react'
+import { Send, User, Phone, MessageSquare, CheckCircle, MapPin, Calendar, Users } from 'lucide-react'
 import { useState, FormEvent } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -54,8 +54,8 @@ export default function DaftarPage() {
       {/* Header */}
       <div className="bg-gradient-to-r from-emerald-700 to-teal-600 px-4 py-5 text-center">
         <div className="flex items-center justify-center gap-3 mb-1">
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
-            <BookOpen size={18} className="text-white" />
+          <div className="w-9 h-9 rounded-xl overflow-hidden bg-white/20 p-0.5">
+            <img src="/logo-tpq.png" alt="Logo TPQ Darussalam" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-white font-bold text-lg">TPQ Darussalam</h1>
         </div>

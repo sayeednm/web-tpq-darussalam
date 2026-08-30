@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-import { BookMarked, Mail, Lock, LogIn } from 'lucide-react'
+import { Mail, Lock, LogIn } from 'lucide-react'
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -41,8 +41,8 @@ export default function LoginPage() {
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-8 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-              <BookMarked size={32} className="text-white" />
+            <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-4 bg-white/20 backdrop-blur-sm p-1">
+              <img src="/logo-tpq.png" alt="Logo TPQ Darussalam" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-bold text-white">TPQ Darussalam</h1>
             <p className="text-emerald-100 text-sm mt-1">Panel Administrasi</p>

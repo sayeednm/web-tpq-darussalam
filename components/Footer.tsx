@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, BookOpen } from 'lucide-react'
+import { MapPin, Phone, Mail, Facebook, Instagram, Youtube } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -18,8 +18,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-amber-300" />
+              <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
+                <img src="/logo-tpq.png" alt="Logo TPQ Darussalam" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-2xl font-bold">TPQ Darussalam</h3>
             </div>
