@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, Phone, Mail, Facebook, Instagram, Youtube } from 'lucide-react'
+import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, BookOpen } from 'lucide-react'
 
 export default function Footer() {
   return (
