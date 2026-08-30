@@ -17,6 +17,7 @@ import {
   X,
   ClipboardCheck,
   Images,
+  Printer,
 } from 'lucide-react'
 
 const menus = [
@@ -29,6 +30,7 @@ const menus = [
   { href: '/admin/penilaian', label: 'Penilaian', icon: Star },
   { href: '/admin/pembayaran', label: 'SPP / Keuangan', icon: Wallet },
   { href: '/admin/media', label: 'Media & Logo', icon: Images },
+  { href: '/admin/cetak', label: 'Cetak / Print', icon: Printer },
 ]
 
 export default function AdminSidebar() {
